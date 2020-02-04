@@ -1,0 +1,54 @@
+- name: "prereqs"
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg2
+      - software-properties-common
+    state: present
+
+- name: "add Docker repository key"
+  apt_key:
+    id: 0EBFCD88
+    keyring: /etc/apt/trusted.gpg.d/docker.gpg
+    url: "https://download.docker.com/linux/debian/gpg"
+    state: present
+
+- name: "add Docker repository"
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    filename: 'docker'
+    state: present
+  register: dockerrepo
+
+- name: "update from new repo"
+  when: dockerrepo.changed
+  apt:
+    update_cache: yes
+
+- name: "install Docker"
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - python-docker
+      - python3-docker
+      - pass
+    state: present
+
+- name: "set MTU to 1442 to enable Docker to run on OpenStack"
+  copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+       "mtu": 1442
+      }
+  register: mtu
+
+- name: "restart Docker after changing MTU"
+  when: mtu.changed
+  service:
+    name: docker
+    state: restarted

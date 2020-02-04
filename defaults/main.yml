@@ -1,0 +1,76 @@
+# redefine for your machine!
+# Yubikey server id and key, get a new pair for each machine at https://upgrade.yubico.com/getapikey/
+perun_yubikey_id: "48695"
+perun_yubikey_key: "jGAqANjXDwthsKp0dnboFGmZ5ag="
+perun_yubikey_lognames: [ 'tesla', 'einstein' ]
+perun_sudo_root_lognames: [ 'tesla' ]
+perun_sudo_perun_lognames: ['einstein' ]
+
+# password to PostgreSQL DB
+perun_postgresql_db_user_password: "X6v38GYN3RxZUYg"
+# password for deploying WARs to tomcat, set in tomcat-users.xml
+perun_tomcat_manager_script_password: "test"
+# password for accessing Tomcat admin GUI, set in tomcat-users.xml
+perun_tomcat_manager_gui_password: "test"
+
+# email alias for root
+perun_root_email_address: makub@ics.muni.cz
+
+# flag to install IGTF CAs certificates
+perun_install_igtf_cas: False
+
+# flag to install Postgres
+perun_install_postgres: True
+
+# version of containers to deploy
+perun_rpc_version: latest
+perun_engine_version: latest
+
+
+######################
+# You do not need to modify value below
+######################
+perun_postgresql_version: 12
+
+# directory with SSL/TLS certificates and keys
+perun_certs_dir: "/etc/perun/ssl"
+perun_postgresql_certificate_file: "{{ perun_certs_dir }}/hostcert.pem"
+perun_postgresql_certificate_key_file: "{{ perun_certs_dir }}/hostkey.pem"
+perun_postgresql_certificate_chain_file: "{{ perun_certs_dir }}/hostchain.pem"
+
+# firewall settings
+perun_firewall_open_tcp_ports:
+  - { port: 80, comment: "accept http" }
+  - { port: 443, comment: "accept https" }
+  - { port: 636, comment: "accept ldaps" }
+  - { port: 5432, ipv6: "2001:718::/32", comment: "accept postgres from CESNET" }
+  - { port: 5432, ipv4: "147.251.0.0/16", comment: "accept postgres from MUNI" }
+
+
+
+# debian repos to use for automatic updates
+perun_unattended_upgrades_origin_patterns: |2
+            "origin=Debian,codename=${distro_codename}";
+            "origin=Debian,codename=${distro_codename}-updates";
+            "origin=meta@cesnet.cz,a=stable";
+            "origin=apt.postgresql.org,codename=${distro_codename}-pgdg";
+# debian packages blacklisted from automatic updates
+perun_unattended_upgrades_blacklist: |2
+            "postgresql-{{ perun_postgresql_version }}";
+            "slapd";
+
+# users for Yubikeys
+perun_yubikey_users:
+  tesla:
+    name: Nikola Tesla
+    yubikeys:
+      - ccccccefghij
+    sshkeys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDe9Rb2N5aq5qYAi8OCeQKlpOBJi/Ll2tlxqiD7Gan7wJrFBbrZIj8a5tOpHKTm61ldihxG7hnXkyEvbAX5vx/6lLagKaLFL3ysh3iH3ZxiXFYXfLklqrrCK2kuwdCIasMF4kJYzS/goLEGeqBkeJN8SvTj2THvzWcvsTZXIgXygzqiiSKlJao2v62EZv3Pi0eP8KhLrdYW2EcePBOKclLGYxdAX0k9KMJHJRecQhS2BtDLDL1rGoCCrw3Pd8689xovzYKC/ATnTZ89slA9HlrKyQjkjVeBX7WbRsjrgYKEDeqWZbdzjT9Nhg/Ftewbqh2V6p8OFQTftKUOmmPXlwAr
+  einstein:
+    name: Albert Einstein
+    yubikeys:
+      - ccccccghijkl
+    sshkeys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQiusTXxPGdXXzhHyU9wEb1i5PAdN/qBX8lVw90/yZo6LKBl+fO2QuRTQUxxRgk05puXYwWMF4IheoVBmWFzwClyH/Ox88Yq+WM4nGxIpzvoyUZQ0rRM7a0LfaLvDsJpkoMOr53LFfQtdTY7ZiKXsaTI1EmhHXVmfgFXDTu4IE2EBGUrKPj28+yD/5UuyybA/TfZJ6wW51M0QAaQy3n2xWY+K+aFfTJv2vQin2cIjIPMWfUoUCR2eYNbtZ/uHwXgJxK1W3PeeJhLjW8RXdfLiSOA3+8X5NCHGBs5BLdvieQjB0SYb0NqCc7scAlJV14MGlWdBYuczV2gvn2mnT4q3F
+

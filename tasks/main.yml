@@ -1,0 +1,27 @@
+---
+- name:  "Ansible 2.9+ required"
+  assert:
+    that:
+      - ansible_version is defined
+      - ansible_version.full is version_compare('2.9', '>=')
+    msg: "Required Ansible version is 2.9+"
+
+- name: "TLS certificates setup"
+  import_tasks: perun_certs.yml
+  tags: perun_certs
+
+- name: "Operating System setup (firewall, yubikeys, monitoring)"
+  import_tasks: os_setup.yml
+  tags: os_setup
+
+- name: "Postgres server setup"
+  import_tasks: postgres.yml
+  tags: postgresql
+
+- name: "Postgres server setup"
+  import_tasks: perun_postgres.yml
+  tags: perun_postgres
+
+- name: "Docker server setup"
+  import_tasks: perun_docker.yml
+  tags: perun_docker

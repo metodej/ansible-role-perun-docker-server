@@ -1,0 +1,20 @@
+- name: "install PostgreSQL"
+  when: perun_install_postgres
+  include_role:
+    name: cesnet.postgresql
+    apply:
+      tags:
+        - postgresql
+  tags:
+    - postgresql
+  vars:
+    postgresql_version: "{{ perun_postgresql_version }}"
+    postgresql_certificate_file: "{{ perun_postgresql_certificate_file }}"
+    postgresql_certificate_key_file: "{{ perun_postgresql_certificate_key_file }}"
+    postgresql_certificate_chain_file: "{{ perun_postgresql_certificate_chain_file }}"
+    postgresql_db_user_password: "{{ perun_postgresql_db_user_password }}"
+    postgresql_max_connections: 200
+    postgresql_daily_backup: True
+    postgresql_db_user: "perun"
+    postgresql_db_name: "perun"
+

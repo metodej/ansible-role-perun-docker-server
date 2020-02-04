@@ -1,0 +1,35 @@
+- name: "set working environment"
+  import_role:
+    name: martin_kuba.work_env
+
+- name: "set firewall"
+  import_role:
+    name: cesnet.firewall
+  vars:
+    firewall_rules_type: iptables
+    firewall_open_tcp_ports: "{{ perun_firewall_open_tcp_ports }}"
+
+- name: "set up monitoring by MetaCentrum's Nagios"
+  import_role:
+    name: cesnet.metacentrum_monitoring
+
+- name: "set up unattended upgrades"
+  import_role:
+    name: "cesnet.unattended_upgrades"
+  vars:
+    unattended_upgrades_origin_patterns: "{{ perun_unattended_upgrades_origin_patterns }}"
+    unattended_upgrades_blacklist: "{{ perun_unattended_upgrades_blacklist }}"
+    root_email_address: "{{ perun_root_email_address }}"
+
+- name: "set up Yubikeys"
+  import_role:
+    name: cesnet.yubikeys
+  vars:
+    other_sudo_user: "perun"
+    yubikey_users: "{{ perun_yubikey_users }}"
+    yubikey_id: "{{ perun_yubikey_id }}"
+    yubikey_key: "{{ perun_yubikey_key }}"
+    yubikey_lognames: "{{ perun_yubikey_lognames }}"
+    sudo_root_lognames: "{{ perun_sudo_root_lognames }}"
+    sudo_other_lognames: "{{ perun_sudo_perun_lognames }}"
+
