@@ -18,10 +18,18 @@
   import_tasks: postgres.yml
   tags: postgresql
 
-- name: "Postgres server setup"
+- name: "Postgres perun db setup"
   import_tasks: perun_postgres.yml
   tags: perun_postgres
 
 - name: "Docker server setup"
   import_tasks: perun_docker.yml
   tags: perun_docker
+
+- name: "perun user setup"
+  import_tasks: perun_user.yml
+  tags: perun_user
+
+- name: "perun containers setup"
+  import_tasks: perun_containers.yml
+  tags: perun_containers

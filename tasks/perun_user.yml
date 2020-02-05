@@ -1,0 +1,30 @@
+- name: "create perun group"
+  group:
+    name: "perun"
+    system: yes
+    gid: 960
+
+- name: "create perun user"
+  user:
+    name: "perun"
+    uid: 960
+    group: "perun"
+    comment: "Perun himself"
+    shell: /bin/bash
+    system: yes
+    create_home: no
+
+
+# ssl-cert group is created by the ssl-cert package, it is used by packages like postgres and openldap which need access to private keys
+# perun user needs access to host key for authentication when uploading to URLs
+- name: "add user perun to group ssl-cert"
+  user:
+    name: perun
+    groups: ssl-cert
+    append: yes
+
+- name: "add user perun to group docker"
+  user:
+    name: perun
+    groups: docker
+    append: yes

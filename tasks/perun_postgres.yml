@@ -5,7 +5,7 @@
     db: "perun"
     name: unaccent
 
-- name: "detect whether table users exists and contains rows"
+- name: "detect whether table users exists"
   become: yes
   become_user: postgres
   postgresql_query:
@@ -29,6 +29,7 @@
     path_to_script: /tmp/postgres.sql
   when: not table_users.query_result[0].exists
 
+#TODO will not be needed since perun v3.9.0
 - name: "create initial users in database"
   become: yes
   become_user: postgres

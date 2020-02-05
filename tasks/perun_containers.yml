@@ -1,0 +1,145 @@
+- name: "create volume for portainer"
+  docker_volume:
+    name: portainer_data
+
+- name: "create password file"
+  copy:
+    dest: "{{ perun_certs_dir }}/portainer_admin_password.txt"
+    content: "{{ perun_portainer_admin_password }}"
+
+- name: "install portainer container"
+  docker_container:
+    name: portainer
+    image: portainer/portainer
+    restart_policy: always
+    command: "-H unix:///var/run/docker.sock --ssl --sslcert {{ perun_certificate_fullchain_file }} --sslkey {{ perun_certificate_key_file }} --admin-password-file {{ perun_certs_dir }}/portainer_admin_password.txt"
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+      - "{{ perun_certs_dir }}:{{ perun_certs_dir }}:ro"
+
+- name: "create a Docker network"
+  docker_network:
+    name: perun_net
+    ipam_config:
+      - subnet: 192.168.0.0/24
+        gateway: 192.168.0.1
+
+- name: "create volume for perun logs"
+  docker_volume:
+    name: perun_logs
+  register: volume_perun_logs
+- name: "create link /var/log/perun to volume perun_logs"
+  file:
+    state: link
+    src: "{{ volume_perun_logs.volume.Mountpoint }}"
+    path: /var/log/perun
+    force: yes
+- name: "make perun_logs writable by perun"
+  file:
+    state: directory
+    path: "{{ volume_perun_logs.volume.Mountpoint }}"
+    owner: perun
+    group: perun
+
+- name: "create volume for apache logs"
+  docker_volume:
+    name: apache_logs
+  register: volume_apache_logs
+- name: "create link /var/log/apache2 to volume apache_logs"
+  file:
+    state: link
+    src: "{{ volume_apache_logs.volume.Mountpoint }}"
+    path: /var/log/apache2
+    force: yes
+- name: "make apache_logs writable by perun"
+  file:
+    state: directory
+    path: "{{ volume_apache_logs.volume.Mountpoint }}"
+    owner: perun
+    group: perun
+
+- stat:
+    path: "/home/perun"
+  register: home_perun_stat
+- name: "delete /home/perun if it is a real directory"
+  file:
+    state: absent
+    path: "/home/perun"
+  when: home_perun_stat.stat.isdir is defined and home_perun_stat.stat.isdir
+- name: "create volume for perun home"
+  docker_volume:
+    name: perun_home
+  register: volume_perun_home
+- name: "create link /home/perun to volume perun_home"
+  file:
+    state: link
+    src: "{{ volume_perun_home.volume.Mountpoint }}"
+    path: /home/perun
+    force: yes
+- name: "make perun_home writable by perun"
+  file:
+    state: directory
+    path: "{{ volume_perun_home.volume.Mountpoint }}"
+    owner: perun
+    group: perun
+
+
+- name: "create /etc/perun"
+  file:
+    state: directory
+    path: /etc/perun
+    owner: perun
+    group: perun
+    mode: 0750
+
+- name: "create jdbc.properties"
+  copy:
+    dest: /etc/perun/jdbc.properties
+    content: |
+      jdbc.driver=org.postgresql.Driver
+      jdbc.url=jdbc:postgresql://192.168.0.1:5432/perun
+      jdbc.username=perun
+      jdbc.password={{ perun_postgresql_db_user_password }}
+    owner: perun
+    group: perun
+    mode: 0440
+
+- name: "login into gitlab docker registry"
+  docker_login:
+    registry_url: "registry.gitlab.ics.muni.cz:443"
+    username: "gitlab-read-only-deploy-token-perun-docker"
+    password: "K3tG1Np-yLVWB51jj3bB"
+
+- name: "create Perun engine container"
+  docker_container:
+    name: perun_engine
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_engine:{{ perun_engine_version }}"
+#    restart_policy: always
+    mounts:
+      - { type: volume, source: perun_logs, target: /var/log/perun }
+      - { type: volume, source: perun_home, target: /home/perun }
+      - { type: bind, source: /etc/perun, target: /etc/perun }
+    networks_cli_compatible: yes
+    networks:
+      - name: perun_net
+
+
+#
+#
+#- name: "create Perun-RPC container"
+#  docker_container:
+#    name: perun_rpc
+#    image: "registry.gitlab.ics.muni.cz:443/3988/dockerpokusy/perunrpc:{{ perun_rpc_version }}"
+#    restart_policy: always
+#    mounts:
+#      - { type: volume, source: perun_logs, target: /var/log/perun }
+#      - { type: bind, source: /etc/perun, target: /etc/perun, read_only: yes }
+#      # enables running processes as users of the host system
+#      - { type: bind, source: /etc/passwd, target: /etc/passwd, read_only: yes }
+#    networks_cli_compatible: yes
+#    networks:
+#      - name: perun_net
+#

@@ -7,11 +7,9 @@ perun_sudo_root_lognames: [ 'tesla' ]
 perun_sudo_perun_lognames: ['einstein' ]
 
 # password to PostgreSQL DB
-perun_postgresql_db_user_password: "X6v38GYN3RxZUYg"
-# password for deploying WARs to tomcat, set in tomcat-users.xml
-perun_tomcat_manager_script_password: "test"
-# password for accessing Tomcat admin GUI, set in tomcat-users.xml
-perun_tomcat_manager_gui_password: "test"
+perun_postgresql_db_user_password: "test"
+# password for accessing portainer at https://machine:9000/
+perun_portainer_admin_password: "test"
 
 # email alias for root
 perun_root_email_address: makub@ics.muni.cz
@@ -34,9 +32,10 @@ perun_postgresql_version: 12
 
 # directory with SSL/TLS certificates and keys
 perun_certs_dir: "/etc/perun/ssl"
-perun_postgresql_certificate_file: "{{ perun_certs_dir }}/hostcert.pem"
-perun_postgresql_certificate_key_file: "{{ perun_certs_dir }}/hostkey.pem"
-perun_postgresql_certificate_chain_file: "{{ perun_certs_dir }}/hostchain.pem"
+perun_certificate_file: "{{ perun_certs_dir }}/hostcert.pem"
+perun_certificate_key_file: "{{ perun_certs_dir }}/hostkey.pem"
+perun_certificate_chain_file: "{{ perun_certs_dir }}/hostchain.pem"
+perun_certificate_fullchain_file: "{{ perun_certs_dir }}/hostfullchain.pem"
 
 # firewall settings
 perun_firewall_open_tcp_ports:
