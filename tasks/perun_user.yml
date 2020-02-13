@@ -1,19 +1,28 @@
-- name: "create perun group"
+- name: "create perun groups"
   group:
-    name: "perun"
+    name: "{{ item.name }}"
     system: yes
-    gid: 960
+    gid: "{{ item.gid }}"
+  loop:
+    - { name: perun, gid: 960 }
+    - { name: perunrpc, gid: 961 }
+    - { name: peruneng, gid: 962 }
+    - { name: perunldc, gid: 963 }
 
-- name: "create perun user"
+- name: "create perun users"
   user:
-    name: "perun"
-    uid: 960
-    group: "perun"
-    comment: "Perun himself"
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    group: "{{ item.name }}"
+    comment: "{{ item.comment }}"
     shell: /bin/bash
     system: yes
     create_home: no
-
+  loop:
+    - { name: perun, uid: 960, comment: "Perun" }
+    - { name: perunrpc, uid: 961, comment: "Perun RPC" }
+    - { name: peruneng, uid: 962, comment: "Perun Engine" }
+    - { name: perunldc, uid: 963, comment: "Perun LDAP Connector" }
 
 # ssl-cert group is created by the ssl-cert package, it is used by packages like postgres and openldap which need access to private keys
 # perun user needs access to host key for authentication when uploading to URLs

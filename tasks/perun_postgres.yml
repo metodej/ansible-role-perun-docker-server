@@ -41,7 +41,7 @@
      insert into perun.ext_sources (id,name,type) values (nextval('ext_sources_id_seq'),'INTERNAL','cz.metacentrum.perun.core.impl.ExtSourceInternal');
      insert into perun.users (id, first_name, last_name) values (nextval('users_id_seq'),'Master','Perun');
      insert into perun.user_ext_sources (id, user_id, login_ext, ext_sources_id, loa) values (nextval('user_ext_sources_id_seq'), currval('users_id_seq'), 'perun', currval('ext_sources_id_seq'), 0);
-     insert into perun.auditer_consumers (id, name, last_processed_id) values (nextval('auditer_consumers_id_seq'), '127.0.0.1:6071', 0);
+     insert into perun.auditer_consumers (id, name, last_processed_id) values (nextval('auditer_consumers_id_seq'), 'perun_rpc:6071', 0);
      insert into perun.auditer_consumers (id, name, last_processed_id) values (nextval('auditer_consumers_id_seq'), 'ldapcConsumer', 0);
      insert into perun.auditer_consumers (id, name, last_processed_id) values (nextval('auditer_consumers_id_seq'), 'notifications', 0);
   when: not table_users.query_result[0].exists

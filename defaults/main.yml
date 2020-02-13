@@ -42,8 +42,10 @@ perun_firewall_open_tcp_ports:
   - { port: 80, comment: "accept http" }
   - { port: 443, comment: "accept https" }
   - { port: 636, comment: "accept ldaps" }
-  - { port: 5432, ipv6: "2001:718::/32", comment: "accept postgres from CESNET" }
-  - { port: 5432, ipv4: "147.251.0.0/16", comment: "accept postgres from MUNI" }
+  - { port: 5432, comment: "accept postgres" }
+#TODO open 5432 for connections from docker containers and MUNI/CESNET
+#  - { port: 5432, ipv6: "2001:718::/32", comment: "accept postgres from CESNET" }
+#  - { port: 5432, ipv4: "147.251.0.0/16", comment: "accept postgres from MUNI" }
 
 
 

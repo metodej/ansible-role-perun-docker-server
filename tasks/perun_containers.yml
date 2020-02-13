@@ -1,3 +1,4 @@
+# install Portainer web app for managing containers
 - name: "create volume for portainer"
   docker_volume:
     name: portainer_data
@@ -20,29 +21,25 @@
       - portainer_data:/data
       - "{{ perun_certs_dir }}:{{ perun_certs_dir }}:ro"
 
-- name: "create a Docker network"
-  docker_network:
-    name: perun_net
-    ipam_config:
-      - subnet: 192.168.0.0/24
-        gateway: 192.168.0.1
-
-- name: "create volume for perun logs"
-  docker_volume:
-    name: perun_logs
-  register: volume_perun_logs
-- name: "create link /var/log/perun to volume perun_logs"
-  file:
-    state: link
-    src: "{{ volume_perun_logs.volume.Mountpoint }}"
-    path: /var/log/perun
-    force: yes
-- name: "make perun_logs writable by perun"
-  file:
-    state: directory
-    path: "{{ volume_perun_logs.volume.Mountpoint }}"
-    owner: perun
-    group: perun
+- name: "create docker volumes for data"
+  include_tasks:
+    file: volume_dir.yml
+    apply:
+      tags:
+        - perun_containers
+  loop:
+    - { name: 'perunrpc_logs', link: "/var/log/perunrpc", owner: perunrpc }
+    - { name: 'peruneng_logs', link: "/var/log/peruneng", owner: peruneng }
+    - { name: 'perunldc_logs', link: "/var/log/perunldc", owner: perunldc }
+    - { name: 'perunrpc_home', link: "/home/perunrpc", owner: perunrpc }
+    - { name: 'peruneng_home', link: "/home/peruneng", owner: peruneng }
+    - { name: 'perunldc_home', link: "/home/perunldc", owner: perunldc }
+    - { name: 'perunrpc_etc',  link: "/etc/perunrpc", owner: perunrpc }
+    - { name: 'peruneng_etc',  link: "/etc/peruneng", owner: peruneng }
+    - { name: 'perunldc_etc',  link: "/etc/perunldc", owner: perunldc }
+  loop_control:
+    loop_var: volume
+    label: "{{ volume.name }}"
 
 - name: "create volume for apache logs"
   docker_volume:
@@ -54,57 +51,13 @@
     src: "{{ volume_apache_logs.volume.Mountpoint }}"
     path: /var/log/apache2
     force: yes
-- name: "make apache_logs writable by perun"
-  file:
-    state: directory
-    path: "{{ volume_apache_logs.volume.Mountpoint }}"
-    owner: perun
-    group: perun
 
-- stat:
-    path: "/home/perun"
-  register: home_perun_stat
-- name: "delete /home/perun if it is a real directory"
-  file:
-    state: absent
-    path: "/home/perun"
-  when: home_perun_stat.stat.isdir is defined and home_perun_stat.stat.isdir
-- name: "create volume for perun home"
-  docker_volume:
-    name: perun_home
-  register: volume_perun_home
-- name: "create link /home/perun to volume perun_home"
-  file:
-    state: link
-    src: "{{ volume_perun_home.volume.Mountpoint }}"
-    path: /home/perun
-    force: yes
-- name: "make perun_home writable by perun"
-  file:
-    state: directory
-    path: "{{ volume_perun_home.volume.Mountpoint }}"
-    owner: perun
-    group: perun
-
-
-- name: "create /etc/perun"
-  file:
-    state: directory
-    path: /etc/perun
-    owner: perun
-    group: perun
-    mode: 0750
-
-- name: "create jdbc.properties"
-  copy:
-    dest: /etc/perun/jdbc.properties
-    content: |
-      jdbc.driver=org.postgresql.Driver
-      jdbc.url=jdbc:postgresql://192.168.0.1:5432/perun
-      jdbc.username=perun
-      jdbc.password={{ perun_postgresql_db_user_password }}
-    owner: perun
-    group: perun
+- name: "create jdbc.properties (contains db password)"
+  template:
+    src: jdbc.properties.j2
+    dest: /etc/perunrpc/jdbc.properties
+    owner: perunrpc
+    group: perunrpc
     mode: 0440
 
 - name: "login into gitlab docker registry"
@@ -113,33 +66,40 @@
     username: "gitlab-read-only-deploy-token-perun-docker"
     password: "K3tG1Np-yLVWB51jj3bB"
 
+- name: "create a local Docker network for Perun"
+  docker_network:
+    name: perun_net
+    driver_options:
+      com.docker.network.driver.mtu: 1442
+    ipam_config:
+      - subnet: 192.168.0.0/24
+        gateway: 192.168.0.1
+
 - name: "create Perun engine container"
   docker_container:
     name: perun_engine
     image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_engine:{{ perun_engine_version }}"
+    pull: yes
 #    restart_policy: always
     mounts:
-      - { type: volume, source: perun_logs, target: /var/log/perun }
-      - { type: volume, source: perun_home, target: /home/perun }
-      - { type: bind, source: /etc/perun, target: /etc/perun }
+      - { type: volume, source: peruneng_logs, target: /var/log/perun }
+      - { type: volume, source: peruneng_home, target: /home/perun }
+      - { type: volume, source: peruneng_etc,  target: /etc/perun }
     networks_cli_compatible: yes
     networks:
       - name: perun_net
 
+- name: "create Perun RPC container"
+  docker_container:
+    name: perun_rpc
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_rpc:{{ perun_rpc_version }}"
+    pull: yes
+    #    restart_policy: always
+    mounts:
+      - { type: volume, source: perunrpc_logs, target: /var/log/perun }
+      - { type: volume, source: perunrpc_home, target: /home/perun }
+      - { type: volume, source: perunrpc_etc, target: /etc/perun }
+    networks_cli_compatible: yes
+    networks:
+      - name: perun_net
 
-#
-#
-#- name: "create Perun-RPC container"
-#  docker_container:
-#    name: perun_rpc
-#    image: "registry.gitlab.ics.muni.cz:443/3988/dockerpokusy/perunrpc:{{ perun_rpc_version }}"
-#    restart_policy: always
-#    mounts:
-#      - { type: volume, source: perun_logs, target: /var/log/perun }
-#      - { type: bind, source: /etc/perun, target: /etc/perun, read_only: yes }
-#      # enables running processes as users of the host system
-#      - { type: bind, source: /etc/passwd, target: /etc/passwd, read_only: yes }
-#    networks_cli_compatible: yes
-#    networks:
-#      - name: perun_net
-#

@@ -1,0 +1,30 @@
+- name: "create volume {{ volume.name }}"
+  docker_volume:
+    name: "{{ volume.name }}"
+  register: vlm
+
+- name: "detect {{ volume.link }}"
+  stat:
+    path: "{{ volume.link }}"
+  register: lnk
+
+- name: "delete {{ volume.link }} if it is a real directory"
+  file:
+    state: absent
+    path: "{{ volume.link }}"
+  when: lnk.stat.isdir is defined and lnk.stat.isdir
+
+- name: "create symbolic link {{ volume.link }} to volume {{ volume.name }}"
+  file:
+    state: link
+    src: "{{ vlm.volume.Mountpoint }}"
+    path: "{{ volume.link }}"
+    force: yes
+
+- name: "make {{ volume.name }} writable by {{ volume.owner }}"
+  file:
+    state: directory
+    path: "{{ vlm.volume.Mountpoint }}"
+    owner: "{{ volume.owner }}"
+    group: "{{ volume.owner }}"
+    mode: 0750
