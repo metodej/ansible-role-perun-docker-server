@@ -1,0 +1,44 @@
+- name: "create /etc/perun/apache/sites-enabled directory"
+  file:
+    path: /etc/perun/apache/sites-enabled
+    state: directory
+
+- name: "create /etc/perun/apache/maintenance directory"
+  file:
+    path: /etc/perun/apache/maintenance
+    state: directory
+
+- name: "install prerequisite for htpasswd task"
+  package:
+    name: python-passlib
+    state: present
+
+- name: "add passwords into /etc/perun/apache/perun.passwd"
+  htpasswd:
+    path: "/etc/perun/apache/perun.passwd"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - { name: perun, password: "{{ perun_ba_password_perun_admin }}" }
+    - { name: perun-engine, password: "{{ perun_ba_password_perun_engine }}" }
+
+- name: "install HTML pages for maintenance (contain perun_email {{ perun_email }})"
+  template:
+    src: "{{ item }}"
+    dest: /etc/perun/apache/maintenance/
+    mode: 0644
+  with_fileglob:
+    - "templates/maintenance/*"
+
+- name: "create /etc/perun/apache/instanceConfig.json"
+  template:
+    src: instanceConfig.json
+    dest: /etc/perun/apache/
+
+- name: "create /etc/perun/apache/sites-enabled/perun.conf"
+  template:
+    src: perun.conf.j2
+    dest: /etc/perun/apache/sites-enabled/perun.conf

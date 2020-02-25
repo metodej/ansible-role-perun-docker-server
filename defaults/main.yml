@@ -1,4 +1,12 @@
 # redefine for your machine!
+
+perun_rpc_hostname: perun.example.org
+perun_rpc_hostname_aliases: []
+perun_ngui_hostname: perun.aai.example.org
+perun_ngui_client_id: xxx-xxxx-xxxx-xxx-xx-xxx
+perun_use_igtf_certs: no
+perun_apache_enable_kerberos: no
+
 # Yubikey server id and key, get a new pair for each machine at https://upgrade.yubico.com/getapikey/
 perun_yubikey_id: "48695"
 perun_yubikey_key: "jGAqANjXDwthsKp0dnboFGmZ5ag="
@@ -10,7 +18,12 @@ perun_sudo_perun_lognames: ['einstein' ]
 perun_postgresql_db_user_password: "test"
 # password for accessing portainer at https://machine:9000/
 perun_portainer_admin_password: "test"
+# passwords for HTTP Basic Auth to RPC
+perun_ba_password_perun_admin: "test"
+perun_ba_password_perun_engine: "test"
 
+# support email
+perun_email: perun@cesnet.cz
 # email alias for root
 perun_root_email_address: makub@ics.muni.cz
 
@@ -21,9 +34,10 @@ perun_install_igtf_cas: False
 perun_install_postgres: True
 
 # version of containers to deploy
-perun_rpc_version: latest
-perun_engine_version: latest
-
+perun_rpc_git_version: production
+perun_rpc_container_version: latest
+perun_engine_container_version: latest
+perun_apache_container_version: latest
 
 ######################
 # You do not need to modify value below

@@ -21,6 +21,11 @@
       - portainer_data:/data
       - "{{ perun_certs_dir }}:{{ perun_certs_dir }}:ro"
 
+- name: "create /var/log/perun"
+  file:
+    state: directory
+    path: /var/log/perun
+
 - name: "create docker volumes for data"
   include_tasks:
     file: volume_dir.yml
@@ -28,15 +33,15 @@
       tags:
         - perun_containers
   loop:
-    - { name: 'perunrpc_logs', link: "/var/log/perunrpc", owner: perunrpc }
-    - { name: 'peruneng_logs', link: "/var/log/peruneng", owner: peruneng }
-    - { name: 'perunldc_logs', link: "/var/log/perunldc", owner: perunldc }
+    - { name: 'perunrpc_logs', link: "/var/log/perun/perunrpc", owner: perunrpc }
+    - { name: 'peruneng_logs', link: "/var/log/perun/peruneng", owner: peruneng }
+    - { name: 'perunldc_logs', link: "/var/log/perun/perunldc", owner: perunldc }
     - { name: 'perunrpc_home', link: "/home/perunrpc", owner: perunrpc }
     - { name: 'peruneng_home', link: "/home/peruneng", owner: peruneng }
     - { name: 'perunldc_home', link: "/home/perunldc", owner: perunldc }
-    - { name: 'perunrpc_etc',  link: "/etc/perunrpc", owner: perunrpc }
-    - { name: 'peruneng_etc',  link: "/etc/peruneng", owner: peruneng }
-    - { name: 'perunldc_etc',  link: "/etc/perunldc", owner: perunldc }
+    - { name: 'perunrpc_etc',  link: "/etc/perun/perunrpc", owner: perunrpc }
+    - { name: 'peruneng_etc',  link: "/etc/perun/peruneng", owner: peruneng }
+    - { name: 'perunldc_etc',  link: "/etc/perun/perunldc", owner: perunldc }
   loop_control:
     loop_var: volume
     label: "{{ volume.name }}"
@@ -55,7 +60,18 @@
 - name: "create jdbc.properties (contains db password)"
   template:
     src: jdbc.properties.j2
-    dest: /etc/perunrpc/jdbc.properties
+    dest: "{{ item }}"
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+  loop:
+    - /etc/perun/perunrpc/jdbc.properties
+    - /etc/perun/perunldc/jdbc.properties
+
+- name: "create perun-web-gui.properties (contains several variables)"
+  template:
+    src: perun-web-gui.properties.j2
+    dest: /etc/perun/perunrpc/perun-web-gui.properties
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -78,7 +94,7 @@
 - name: "create Perun engine container"
   docker_container:
     name: perun_engine
-    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_engine:{{ perun_engine_version }}"
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_engine:{{ perun_engine_container_version }}"
     pull: yes
 #    restart_policy: always
     mounts:
@@ -92,7 +108,7 @@
 - name: "create Perun RPC container"
   docker_container:
     name: perun_rpc
-    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_rpc:{{ perun_rpc_version }}"
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_rpc:{{ perun_rpc_container_version }}"
     pull: yes
     #    restart_policy: always
     mounts:
@@ -103,3 +119,19 @@
     networks:
       - name: perun_net
 
+- name: "create Perun Apache container"
+  docker_container:
+    name: perun_apache
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_apache:{{ perun_apache_container_version }}"
+    pull: yes
+    #    restart_policy: always
+    mounts:
+      - { type: volume, source: apache_logs, target: /var/log/apache2 }
+      - { type: bind, source: /etc/perun/ssl, target: /etc/perun/ssl, read_only: yes }
+      - { type: bind, source: /etc/perun/apache, target: /etc/perun/apache, read_only: yes }
+    networks_cli_compatible: yes
+    networks:
+      - name: perun_net
+    ports:
+      - 80:80
+      - 443:443

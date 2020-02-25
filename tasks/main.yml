@@ -30,6 +30,10 @@
   import_tasks: perun_user.yml
   tags: perun_user
 
+- name: "perun apache setup"
+  import_tasks: perun_apache.yml
+  tags: perun_apache
+
 - name: "perun containers setup"
   import_tasks: perun_containers.yml
   tags: perun_containers
