@@ -37,3 +37,26 @@
     creates: "{{ perun_certificate_fullchain_file }}"
     cmd: "cat {{ perun_certificate_file}} {{ perun_certificate_chain_file }} >{{ perun_certificate_fullchain_file }}"
 
+- name: "set NGUI key"
+  copy:
+    src: "{{ inventory_hostname }}/nguikey.pem"
+    dest: "{{ perun_certs_dir }}/nguikey.pem"
+    owner: root
+    group: ssl-cert
+    mode: 0640
+
+- name: "set NGUI certificate"
+  copy:
+    src: "{{ inventory_hostname }}/nguicert.pem"
+    dest: "{{ perun_certs_dir }}/nguicert.pem"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "set NGUI chain"
+  copy:
+    src: "{{ inventory_hostname }}/nguichain.pem"
+    dest: "{{ perun_certs_dir }}/nguichain.pem"
+    owner: root
+    group: root
+    mode: 0644

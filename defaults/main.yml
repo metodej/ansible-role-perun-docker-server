@@ -1,11 +1,39 @@
 # redefine for your machine!
-
-perun_rpc_hostname: perun.example.org
-perun_rpc_hostname_aliases: []
-perun_ngui_hostname: perun.aai.example.org
-perun_ngui_client_id: xxx-xxxx-xxxx-xxx-xx-xxx
-perun_use_igtf_certs: no
-perun_apache_enable_kerberos: no
+perun_apache:
+  rpc_hostname: perun.example.org
+  rpc_hostname_aliases: []
+  igtf_certs: no
+  fed_enabled: yes
+  fed_initiators: []
+  kerberos_enabled: no
+  kerberos_realms:
+    - name: META
+      urlmatch: '(^/krb/|^/krb-ic/)'
+    - name: EINFRA
+      urlmatch: '^/krbe/'
+    - name: EINFRA-SERVICES
+      urlmatch: '^/krbes/'
+    - name: ADMIN.META
+      urlmatch: '^/krbam/'
+  oauth:
+    introspection_url: https://login.example.org/oidc/introspection
+    client_id: xxx-xxxx-xxx-xxx-x-x-x-x-xxxx
+    client_secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  ngui:
+    hostname: perun.aai.example.org
+    client_id: xxx-xxxx-xxxx-xxx-xx-xxx
+    oidc_issuer: https://login.example.org/oidc/
+  csp:
+    script_src: ""
+    frame_src: ""
+    style_src: ""
+    font_src: ""
+    img_src: ""
+    connect_src: ""
+  special_config1: |
+    # no special directives at the start of config
+  special_config2: |
+    # no special directives at the endof config
 
 # Yubikey server id and key, get a new pair for each machine at https://upgrade.yubico.com/getapikey/
 perun_yubikey_id: "48695"

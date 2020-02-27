@@ -76,6 +76,14 @@
     group: perunrpc
     mode: 0440
 
+- name: "create perun.properties (contains several variables)"
+  template:
+    src: perun.properties.j2
+    dest: /etc/perun/perunrpc/perun.properties
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+
 - name: "login into gitlab docker registry"
   docker_login:
     registry_url: "registry.gitlab.ics.muni.cz:443"

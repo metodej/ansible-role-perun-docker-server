@@ -38,7 +38,12 @@
     src: instanceConfig.json
     dest: /etc/perun/apache/
 
-- name: "create /etc/perun/apache/sites-enabled/perun.conf"
+- name: "create /etc/perun/apache/sites-enabled/000-perun.conf"
   template:
     src: perun.conf.j2
-    dest: /etc/perun/apache/sites-enabled/perun.conf
+    dest: /etc/perun/apache/sites-enabled/000-perun.conf
+
+- name: "create /etc/perun/apache/sites-enabled/perun-ngui.conf"
+  template:
+    src: perun-ngui.conf.j2
+    dest: /etc/perun/apache/sites-enabled/perun-ngui.conf
