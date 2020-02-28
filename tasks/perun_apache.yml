@@ -13,7 +13,7 @@
     name: python-passlib
     state: present
 
-- name: "add passwords into /etc/perun/apache/perun.passwd"
+- name: "add common passwords into /etc/perun/apache/perun.passwd"
   htpasswd:
     path: "/etc/perun/apache/perun.passwd"
     name: "{{ item.name }}"
@@ -22,8 +22,22 @@
     group: root
     mode: 0644
   loop:
-    - { name: perun, password: "{{ perun_ba_password_perun_admin }}" }
-    - { name: perun-engine, password: "{{ perun_ba_password_perun_engine }}" }
+    - { name: "perun", password: "{{ perun_apache.basicAuth.common.perun }}" }
+    - { name: "perun-engine", password: "{{ perun_apache.basicAuth.common['perun-engine'] }}" }
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "add additional passwords into /etc/perun/apache/perun.passwd"
+  htpasswd:
+    path: "/etc/perun/apache/perun.passwd"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ perun_apache.basicAuth.additional }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: "install HTML pages for maintenance (contain perun_email {{ perun_email }})"
   template:
@@ -42,8 +56,10 @@
   template:
     src: perun.conf.j2
     dest: /etc/perun/apache/sites-enabled/000-perun.conf
+  notify: "restart perun_apache"
 
 - name: "create /etc/perun/apache/sites-enabled/perun-ngui.conf"
   template:
     src: perun-ngui.conf.j2
     dest: /etc/perun/apache/sites-enabled/perun-ngui.conf
+  notify: "restart perun_apache"

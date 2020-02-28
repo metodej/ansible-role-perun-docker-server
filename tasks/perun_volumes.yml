@@ -1,0 +1,36 @@
+- name: "create /var/log/perun"
+  file:
+    state: directory
+    path: /var/log/perun
+
+- name: "create docker volumes for data"
+  include_tasks:
+    file: volume_dir.yml
+    apply:
+      tags:
+        - perun_containers
+  loop:
+    - { name: 'perunrpc_logs', link: "/var/log/perun/perunrpc", owner: perunrpc }
+    - { name: 'peruneng_logs', link: "/var/log/perun/peruneng", owner: peruneng }
+    - { name: 'perunldc_logs', link: "/var/log/perun/perunldc", owner: perunldc }
+    - { name: 'perunrpc_home', link: "/home/perunrpc", owner: perunrpc }
+    - { name: 'peruneng_home', link: "/home/peruneng", owner: peruneng }
+    - { name: 'perunldc_home', link: "/home/perunldc", owner: perunldc }
+    - { name: 'perunrpc_etc',  link: "/etc/perun/perunrpc", owner: perunrpc }
+    - { name: 'peruneng_etc',  link: "/etc/perun/peruneng", owner: peruneng }
+    - { name: 'perunldc_etc',  link: "/etc/perun/perunldc", owner: perunldc }
+  loop_control:
+    loop_var: volume
+    label: "{{ volume.name }}"
+
+- name: "create volume for apache logs"
+  docker_volume:
+    name: apache_logs
+  register: volume_apache_logs
+
+- name: "create link /var/log/apache2 to volume apache_logs"
+  file:
+    state: link
+    src: "{{ volume_apache_logs.volume.Mountpoint }}"
+    path: /var/log/apache2
+    force: yes

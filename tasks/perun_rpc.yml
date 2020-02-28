@@ -1,0 +1,52 @@
+- name: "create jdbc.properties (contains db password)"
+  template:
+    src: jdbc.properties.j2
+    dest: "{{ item }}"
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+  notify: "restart perun_rpc"
+  loop:
+    - /etc/perun/perunrpc/jdbc.properties
+    - /etc/perun/perunldc/jdbc.properties
+
+- name: "create perun-web-gui.properties (contains several variables)"
+  template:
+    src: perun-web-gui.properties.j2
+    dest: /etc/perun/perunrpc/perun-web-gui.properties
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+  notify: "restart perun_rpc"
+
+- name: "create perun.properties (contains several variables)"
+  template:
+    src: perun.properties.j2
+    dest: /etc/perun/perunrpc/perun.properties
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+  notify: "restart perun_rpc"
+
+- name: "create perun-extSources.xml"
+  copy:
+    src: "{{ lookup('first_found', findme) }}"
+    dest: "/etc/perun/perunrpc/perun-extSources.xml"
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+  vars:
+    findme:
+      - "{{ inventory_hostname }}/perun-extSources.xml"
+      - "perun-extSources.xml"
+  notify: "restart perun_rpc"
+
+# does not belong here, but I am lazy to create perun_engine.yml for just a single task
+- name: "create perun-engine (contains password)"
+  template:
+    src: perun-engine.j2
+    dest: /etc/perun/peruneng/perun-engine
+    owner: peruneng
+    group: peruneng
+    mode: 0440
+  notify: "restart perun_engine"

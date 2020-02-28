@@ -1,0 +1,27 @@
+- name: "restart Perun RPC"
+  listen: "restart perun_rpc"
+  docker_container:
+    name: perun_rpc
+    state: started
+    restart: yes
+
+- name: "restart Perun Apache"
+  listen: "restart perun_apache"
+  docker_container:
+    name: perun_apache
+    state: started
+    restart: yes
+
+- name: "restart Perun Engine"
+  listen: "restart perun_engige"
+  docker_container:
+    name: perun_engine
+    state: started
+    restart: yes
+
+- name: "restart Perun LDAPC"
+  listen: "restart perun_ldapc"
+  docker_container:
+    name: perun_ldapc
+    state: started
+    restart: yes

@@ -2,6 +2,13 @@
 perun_apache:
   rpc_hostname: perun.example.org
   rpc_hostname_aliases: []
+  basicAuth:
+    # passwords for HTTP Basic Auth to RPC
+    common:
+      perun: "test"
+      perun-engine: "test"
+    additional:
+     - { name: "_oidc_server", password: "test" }
   igtf_certs: no
   fed_enabled: yes
   fed_initiators: []
@@ -46,9 +53,7 @@ perun_sudo_perun_lognames: ['einstein' ]
 perun_postgresql_db_user_password: "test"
 # password for accessing portainer at https://machine:9000/
 perun_portainer_admin_password: "test"
-# passwords for HTTP Basic Auth to RPC
-perun_ba_password_perun_admin: "test"
-perun_ba_password_perun_engine: "test"
+
 
 # support email
 perun_email: perun@cesnet.cz
