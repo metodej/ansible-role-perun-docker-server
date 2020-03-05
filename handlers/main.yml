@@ -13,7 +13,7 @@
     restart: yes
 
 - name: "restart Perun Engine"
-  listen: "restart perun_engige"
+  listen: "restart perun_engine"
   docker_container:
     name: perun_engine
     state: started
