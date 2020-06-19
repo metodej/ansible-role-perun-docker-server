@@ -63,3 +63,57 @@
     src: perun-ngui.conf.j2
     dest: /etc/perun/apache/sites-enabled/perun-ngui.conf
   notify: "restart perun_apache"
+
+- name: "set Kerberos keytab"
+  copy:
+    src: "{{ inventory_hostname }}/krb5.http.keytab"
+    dest: "/etc/perun/apache/krb5.http.keytab"
+    owner: root
+    group: root
+    mode: 0400
+  when:  perun_apache.kerberos_enabled
+
+- name: "create /etc/perun/apache/shibboleth directory"
+  file:
+    path: /etc/perun/apache/shibboleth
+    state: directory
+
+- name: "create symbolic link /etc/shibboleth"
+  file:
+    state: link
+    src: /etc/perun/apache/shibboleth
+    path: /etc/shibboleth
+
+- name: "create attribute-map.xml"
+  template:
+    src:  attribute-map.xml.j2
+    dest: /etc/perun/apache/shibboleth/attribute-map.xml
+  notify: "restart perun_apache"
+
+- name: "create attribute-policy.xml"
+  template:
+    src:  attribute-policy.xml.j2
+    dest: /etc/perun/apache/shibboleth/attribute-policy.xml
+  notify: "restart perun_apache"
+
+- name: "create shibboleth2.xml"
+  template:
+    src:  shibboleth2.xml.j2
+    dest: /etc/perun/apache/shibboleth/shibboleth2.xml
+  notify: "restart perun_apache"
+
+- name: "create sp-key.pem"
+  copy:
+    src: "{{ inventory_hostname }}/sp-key.pem"
+    dest: /etc/perun/apache/shibboleth/sp-key.pem
+    owner: root
+    group: root
+    mode: 0444
+
+- name: "create sp-cert.pem"
+  copy:
+    src: "{{ inventory_hostname }}/sp-cert.pem"
+    dest: /etc/perun/apache/shibboleth/sp-cert.pem
+    owner: root
+    group: root
+    mode: 0444

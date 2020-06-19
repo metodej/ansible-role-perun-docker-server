@@ -1,14 +1,15 @@
+{{ ansible_managed | comment }}
+
 jdbc.driver=org.postgresql.Driver
 jdbc.url=jdbc:postgresql://192.168.0.1:5432/perun
 jdbc.username=perun
 jdbc.password={{ perun_postgresql_db_user_password }}
 
 # HikariCP suggest to match number of connections with number of CPUs available.
-# Using same values -> fix-sized-pool better handles spike demands.
+# minimumIdle means that number unused connections will be maintained all the time
 # Max. should be below DB limit (which si by default 150 for Perun).
-# Ideal seems to be like 25 / 10
 jdbc.maximumPoolSize=150
-jdbc.minimumIdle=10
+jdbc.minimumIdle=1
 
 # How long Perun waits for connection from the pool before exception is thrown. Value is in millis.
 # Our default is 5 minutes / Hikari default is 30s

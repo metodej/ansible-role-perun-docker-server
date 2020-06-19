@@ -22,6 +22,7 @@
     owner: root
     group: root
     mode: 0644
+  register: certfile
 
 - name: "set host chain"
   copy:
@@ -34,8 +35,8 @@
 - name: "assemble full chain"
   shell:
     chdir: "{{ perun_certs_dir }}"
-    creates: "{{ perun_certificate_fullchain_file }}"
     cmd: "cat {{ perun_certificate_file}} {{ perun_certificate_chain_file }} >{{ perun_certificate_fullchain_file }}"
+  when: certfile.changed
 
 - name: "set NGUI key"
   copy:

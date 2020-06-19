@@ -41,6 +41,8 @@ perun_apache:
     # no special directives at the start of config
   special_config2: |
     # no special directives at the endof config
+  shibboleth_sp:
+    attribute_map_additions: ""
 
 # Yubikey server id and key, get a new pair for each machine at https://upgrade.yubico.com/getapikey/
 perun_yubikey_id: "48695"
@@ -63,14 +65,16 @@ perun_root_email_address: makub@ics.muni.cz
 # flag to install IGTF CAs certificates
 perun_install_igtf_cas: False
 
-# flag to install Postgres
-perun_install_postgres: True
-
 # version of containers to deploy
 perun_rpc_git_version: production
 perun_rpc_container_version: latest
 perun_engine_container_version: latest
 perun_apache_container_version: latest
+
+# special settings for PostgreSQL
+perun_postgresql_settings:
+  max_connections: 200
+  max_pred_locks_per_transaction: 128
 
 ######################
 # You do not need to modify value below

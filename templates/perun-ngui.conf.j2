@@ -1,10 +1,12 @@
+{{ ansible_managed | comment }}
+
 ####
 # Angular GUI with OIDC
 ####
 
 <VirtualHost *:80>
     ServerAdmin {{ perun_email }}
-    ServerName perun.aai.cesnet.cz
+    ServerName {{ perun_apache.ngui.hostname }}
     Redirect / https://{{ perun_apache.ngui.hostname }}/
 </VirtualHost>
 
