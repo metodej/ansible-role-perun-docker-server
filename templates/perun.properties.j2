@@ -81,7 +81,7 @@ perun.sms.program = /home/perun/send_sms.sh
 perun.readOnlyPerun=false
 
 # Set true if Perun should update DB version when new version of code is present (item is optional, defualt is false).
-perun.DBInitializatorEnabled=false
+perun.DBInitializatorEnabled=true
 
 # Perun instance name
 perun.instanceName = {{ perun_rpc.instance_name }}
@@ -102,6 +102,12 @@ perun.extsources.multiple.identifiers=
 
 # Comma separated names of allowed CORS domains
 perun.allowedCorsDomains={{ perun_rpc.cors_domains }}
+
+# OIDC
+perun.oidc.issuers=o1
+perun.oidc.o1.iss={{ perun_rpc.oidc.issuer }}
+perun.oidc.o1.extsource.name={{ perun_rpc.oidc.extsource_name }}
+perun.oidc.o1.extsource.type={{ perun_rpc.oidc.extsource_type }}
 
 # IdP/Cert Attributes to update in PERUN
 # (override default settings, comma separated list of attribute names - passed to Tomcat)
