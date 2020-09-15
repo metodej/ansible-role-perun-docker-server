@@ -22,6 +22,10 @@
   import_tasks: perun_postgres.yml
   tags: perun_postgres
 
+- name: "OpenLDAP directory server setup"
+  import_tasks: perun_ldap.yml
+  tags: perun_ldap
+
 - name: "Docker server setup"
   import_tasks: perun_docker.yml
   tags: perun_docker

@@ -25,3 +25,8 @@
     name: perun_ldapc
     state: started
     restart: yes
+
+- name: "restart ldap"
+  service:
+    name: slapd
+    state: restarted

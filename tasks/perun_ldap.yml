@@ -1,0 +1,254 @@
+- name: "backports repo"
+  apt_repository:
+    repo: "deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main"
+    state: present
+    filename: "{{ ansible_distribution_release }}-backports"
+    update_cache: yes
+
+# available debconf options for slapd are in https://salsa.debian.org/openldap-team/openldap/-/blob/master/debian/slapd.templates
+- name: "configure domain for OpenLDAP using debconf"
+  debconf:
+    name: slapd
+    question: slapd/domain
+    vtype: string
+    value: '{{ ldap_domain }}'
+
+- name: "configure attribute o for top entry using debconf"
+  debconf:
+    name: slapd
+    question: shared/organization
+    vtype: string
+    value: perun
+
+- name: "configure purging OpenLDAP database when uninstalling using debconf"
+  debconf:
+    name: slapd
+    question: slapd/purge_database
+    vtype: boolean
+    value: 'true'
+
+- name: "configure data admin password for OpenLDAP using debconf"
+  debconf:
+    name: slapd
+    question: "{{ item }}"
+    vtype: password
+    value: "{{ ldap_data_password }}"
+  # wrongly reports as changed even when not changed, see https://github.com/ansible/ansible/issues/47676
+  changed_when: False
+  no_log: True
+  loop:
+    - slapd/password1
+    - slapd/password2
+
+- name: "install software packages"
+  apt:
+    state: present
+    default_release: "{{ ansible_distribution_release }}-backports"
+    name:
+      - slapd
+      - ldap-utils
+      - python-ldap
+
+- name: "hold slapd package from upgrading"
+  dpkg_selections:
+    name: slapd
+    selection: hold
+
+# SHA is used for idempotency, SSHA has different salt each time
+- name: "compute config admin password hash"
+  shell: "slappasswd -h '{SHA}' -s {{ ldap_config_password }}"
+  register: ldap_config_admin_password_hash
+  changed_when: False
+  no_log: True
+
+- name: "set config admin password"
+  ldap_attr:
+    dn: olcDatabase={0}config,cn=config
+    name: olcRootPW
+    values: "{{ ldap_config_admin_password_hash.stdout }}"
+    state: exact
+  no_log: True
+
+- name: "add openldap user to ssl-cert group"
+  user:
+    name: openldap
+    groups: ssl-cert
+    append: yes
+  register: openldap_ssl_cert_group
+
+- name: "restart OpenLDAP after openldap user added to group ssl-cert"
+  service:
+    name: slapd
+    state: restarted
+  when: openldap_ssl_cert_group.changed
+
+- name: "create file for modifying LDAP TLS settings"
+  copy:
+    dest: "/etc/ldap/ssl.ldif"
+    content: |
+      dn: cn=config
+      changetype: modify
+      replace: olcTLSCertificateFile
+      olcTLSCertificateFile: {{ perun_certificate_file }}
+      -
+      replace: olcTLSCertificateKeyFile
+      olcTLSCertificateKeyFile: {{ perun_certificate_key_file }}
+      -
+      replace: olcTLSCACertificateFile
+      olcTLSCACertificateFile: {{ perun_certificate_chain_file }}
+      -
+  register: ssl_ldif
+
+- name: "change OpenLDAP TLS settings"
+  command: /usr/bin/ldapmodify -Q -H ldapi:/// -Y EXTERNAL -f /etc/ldap/ssl.ldif
+  when: ssl_ldif.changed
+
+- name: "enable secure port in /etc/default/slapd"
+  lineinfile:
+    dest: /etc/default/slapd
+    regexp: ^SLAPD_SERVICES=
+    line: SLAPD_SERVICES="ldaps:/// ldapi:/// ldap://127.0.0.1/"
+  register: secure_port_enabled
+
+- name: "restart OpenLDAP after enabling TLS"
+  service:
+    name: slapd
+    state: restarted
+  when: secure_port_enabled.changed or ssl_ldif.changed
+
+- name: "compute baseDN"
+  set_fact:
+    ldap_basedn: '{{ "dc=" + ldap_domain.split(".") | join(",dc=") }}'
+
+- name: "compute admin DN"
+  set_fact:
+    ldap_data_admin_dn: '{{ "cn=admin," + ldap_basedn }}'
+
+# SHA is used for idempotency, SSHA has different salt each time
+- name: "compute proxy admin password hash"
+  shell: "slappasswd -h '{SHA}' -s {{ ldap_proxy_password }}"
+  register: ldap_proxy_password_hash
+  changed_when: False
+  no_log: True
+
+- name: "create cn=proxy,{{ ldap_basedn }} user entry"
+  ldap_entry:
+    dn: "cn=proxy,{{ ldap_basedn }}"
+    objectClass:
+      - simpleSecurityObject
+      - organizationalRole
+    attributes:
+      cn: proxy
+      description: "user for IdP proxy"
+      userPassword: "{{ ldap_proxy_password_hash.stdout }}"
+    state: present
+    bind_dn: "{{ ldap_data_admin_dn }}"
+    bind_pw: "{{ ldap_data_password }}"
+
+- name: "modify OpenLDAP access rights"
+  ldap_attr:
+    dn: olcDatabase={1}mdb,cn=config
+    name: olcAccess
+    # value are in YAML folded style (newlines are replaced with spaces) with chomping (no newline at the end)
+    values:
+      - >-
+        {0}to attrs=userPassword
+        by self write
+        by anonymous auth
+        by * none
+      - >-
+        {1}to attrs=shadowLastChange
+        by self write
+        by * read
+      - >-
+        {2}to dn.subtree="{{ ldap_basedn }}"
+        by dn.exact="cn=proxy,{{ ldap_basedn }}" read
+        by * break
+      - >-
+        {3}to *
+        by self read
+        by * break
+      - >-
+        {4}to *
+        by users search
+        by * break
+
+- name: "set cn=config attribute olcAttributeOptions: x-ns-"
+  ldap_attr:
+    dn: cn=config
+    name: olcAttributeOptions
+    values: "x-ns-"
+    state: exact
+
+- name: "create ou=People branch"
+  ldap_entry:
+    dn: "ou=People,{{ ldap_basedn }}"
+    objectClass: organizationalUnit
+    state: present
+    bind_dn: "{{ ldap_data_admin_dn }}"
+    bind_pw: "{{ ldap_data_password }}"
+
+- name: "create entry for schema perun"
+  ldap_entry:
+    dn: cn={4}perun,cn=schema,cn=config
+    objectClass: olcSchemaConfig
+  register: perun_schema_entry
+- name: "download schema perun file"
+  get_url:
+    url: "https://raw.githubusercontent.com/CESNET/perun/{{ ldap_schemas_perun_version }}/perun-utils/ldapc-scripts/schemas/perun-schema.ldif"
+    dest: "/etc/ldap/perun-schema.ldif"
+    force: yes
+  register: perun_schema_file
+- name: "set up schema perun"
+  command: "/usr/bin/ldapmodify -Q -H ldapi:/// -Y EXTERNAL -f  /etc/ldap/perun-schema.ldif"
+  when: perun_schema_entry.changed or perun_schema_file.changed
+
+- name: "create entry for schema inetUser"
+  ldap_entry:
+    dn: cn={5}inetUser,cn=schema,cn=config
+    objectClass: olcSchemaConfig
+  register: inetUser_schema_entry
+- name: "download schema inetUser file"
+  get_url:
+    url: "https://raw.githubusercontent.com/CESNET/perun/{{ ldap_schemas_perun_version }}/perun-utils/ldapc-scripts/schemas/inetUser-schema.ldif"
+    dest: "/etc/ldap/inetUser-schema.ldif"
+    force: yes
+  register: inetUser_schema_file
+- name: "set up schema inetUser"
+  command: "/usr/bin/ldapmodify -Q -H ldapi:/// -Y EXTERNAL -f  /etc/ldap/inetUser-schema.ldif"
+  when: inetUser_schema_entry.changed or inetUser_schema_file.changed
+
+- name: "create entry for schema tenOperEntry"
+  ldap_entry:
+    dn: cn={6}tenOperEntry,cn=schema,cn=config
+    objectClass: olcSchemaConfig
+  register: tenOperEntry_schema_entry
+- name: "download schema tenOperEntry file"
+  get_url:
+    url: "https://raw.githubusercontent.com/CESNET/perun/{{ ldap_schemas_perun_version }}/perun-utils/ldapc-scripts/schemas/tenOperEntry-schema.ldif"
+    dest: "/etc/ldap/tenOperEntry-schema.ldif"
+    force: yes
+  register: tenOperEntry_schema_file
+- name: "set up schema tenOperEntry"
+  command: "/usr/bin/ldapmodify -Q -H ldapi:/// -Y EXTERNAL -f  /etc/ldap/tenOperEntry-schema.ldif"
+  when: tenOperEntry_schema_entry.changed or tenOperEntry_schema_file.changed
+
+- name: "set indexes (olcDbIndex attribute)"
+  ldap_attr:
+    dn: olcDatabase={1}mdb,cn=config
+    name: olcDbIndex
+    values:
+      - cn,uid eq
+      - member,memberUid eq
+      - objectClass eq
+      - uidNumber,gidNumber eq
+      - perunVoId eq
+      - eduPersonPrincipalNames eq
+      - entryCSN,entryUUID eq
+      - login eq
+      - memberOfPerunVo eq
+      - userCertificateSubject eq
+      - entityID eq
+      - assignedToResourceId eq
+    state: present
+  notify: "restart ldap"

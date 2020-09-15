@@ -1,4 +1,10 @@
 # redefine for your machine!
+ldap_domain: "cesnet.cz"
+ldap_config_password: "test"
+ldap_data_password: "test"
+ldap_proxy_password: "test"
+ldap_schemas_perun_version: "production"
+
 perun_apache:
   rpc_hostname: perun.example.org
   rpc_hostname_aliases: []
