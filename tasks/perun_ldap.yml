@@ -11,7 +11,7 @@
     name: slapd
     question: slapd/domain
     vtype: string
-    value: '{{ ldap_domain }}'
+    value: '{{ perun_ldap_domain }}'
 
 - name: "configure attribute o for top entry using debconf"
   debconf:
@@ -32,7 +32,7 @@
     name: slapd
     question: "{{ item }}"
     vtype: password
-    value: "{{ ldap_data_password }}"
+    value: "{{ perun_ldap_data_password }}"
   # wrongly reports as changed even when not changed, see https://github.com/ansible/ansible/issues/47676
   changed_when: False
   no_log: True
@@ -56,7 +56,7 @@
 
 # SHA is used for idempotency, SSHA has different salt each time
 - name: "compute config admin password hash"
-  shell: "slappasswd -h '{SHA}' -s {{ ldap_config_password }}"
+  shell: "slappasswd -h '{SHA}' -s {{ perun_ldap_config_password }}"
   register: ldap_config_admin_password_hash
   changed_when: False
   no_log: True
@@ -118,32 +118,32 @@
 
 - name: "compute baseDN"
   set_fact:
-    ldap_basedn: '{{ "dc=" + ldap_domain.split(".") | join(",dc=") }}'
+    perun_ldap_basedn: '{{ "dc=" + perun_ldap_domain.split(".") | join(",dc=") }}'
 
 - name: "compute admin DN"
   set_fact:
-    ldap_data_admin_dn: '{{ "cn=admin," + ldap_basedn }}'
+    perun_ldap_data_admin_dn: '{{ "cn=admin," + perun_ldap_basedn }}'
 
 # SHA is used for idempotency, SSHA has different salt each time
 - name: "compute proxy admin password hash"
-  shell: "slappasswd -h '{SHA}' -s {{ ldap_proxy_password }}"
-  register: ldap_proxy_password_hash
+  shell: "slappasswd -h '{SHA}' -s {{ perun_ldap_proxy_password }}"
+  register: perun_ldap_proxy_password_hash
   changed_when: False
   no_log: True
 
-- name: "create cn=proxy,{{ ldap_basedn }} user entry"
+- name: "create cn=proxy,{{ perun_ldap_basedn }} user entry"
   ldap_entry:
-    dn: "cn=proxy,{{ ldap_basedn }}"
+    dn: "cn=proxy,{{ perun_ldap_basedn }}"
     objectClass:
       - simpleSecurityObject
       - organizationalRole
     attributes:
       cn: proxy
       description: "user for IdP proxy"
-      userPassword: "{{ ldap_proxy_password_hash.stdout }}"
+      userPassword: "{{ perun_ldap_proxy_password_hash.stdout }}"
     state: present
-    bind_dn: "{{ ldap_data_admin_dn }}"
-    bind_pw: "{{ ldap_data_password }}"
+    bind_dn: "{{ perun_ldap_data_admin_dn }}"
+    bind_pw: "{{ perun_ldap_data_password }}"
 
 - name: "modify OpenLDAP access rights"
   ldap_attr:
@@ -161,8 +161,8 @@
         by self write
         by * read
       - >-
-        {2}to dn.subtree="{{ ldap_basedn }}"
-        by dn.exact="cn=proxy,{{ ldap_basedn }}" read
+        {2}to dn.subtree="{{ perun_ldap_basedn }}"
+        by dn.exact="cn=proxy,{{ perun_ldap_basedn }}" read
         by * break
       - >-
         {3}to *
@@ -182,11 +182,11 @@
 
 - name: "create ou=People branch"
   ldap_entry:
-    dn: "ou=People,{{ ldap_basedn }}"
+    dn: "ou=People,{{ perun_ldap_basedn }}"
     objectClass: organizationalUnit
     state: present
-    bind_dn: "{{ ldap_data_admin_dn }}"
-    bind_pw: "{{ ldap_data_password }}"
+    bind_dn: "{{ perun_ldap_data_admin_dn }}"
+    bind_pw: "{{ perun_ldap_data_password }}"
 
 - name: "create entry for schema perun"
   ldap_entry:
@@ -195,7 +195,7 @@
   register: perun_schema_entry
 - name: "download schema perun file"
   get_url:
-    url: "https://raw.githubusercontent.com/CESNET/perun/{{ ldap_schemas_perun_version }}/perun-utils/ldapc-scripts/schemas/perun-schema.ldif"
+    url: "https://raw.githubusercontent.com/CESNET/perun/{{ perun_ldap_schemas_perun_version }}/perun-utils/ldapc-scripts/schemas/perun-schema.ldif"
     dest: "/etc/ldap/perun-schema.ldif"
     force: yes
   register: perun_schema_file
@@ -210,7 +210,7 @@
   register: inetUser_schema_entry
 - name: "download schema inetUser file"
   get_url:
-    url: "https://raw.githubusercontent.com/CESNET/perun/{{ ldap_schemas_perun_version }}/perun-utils/ldapc-scripts/schemas/inetUser-schema.ldif"
+    url: "https://raw.githubusercontent.com/CESNET/perun/{{ perun_ldap_schemas_perun_version }}/perun-utils/ldapc-scripts/schemas/inetUser-schema.ldif"
     dest: "/etc/ldap/inetUser-schema.ldif"
     force: yes
   register: inetUser_schema_file
@@ -225,7 +225,7 @@
   register: tenOperEntry_schema_entry
 - name: "download schema tenOperEntry file"
   get_url:
-    url: "https://raw.githubusercontent.com/CESNET/perun/{{ ldap_schemas_perun_version }}/perun-utils/ldapc-scripts/schemas/tenOperEntry-schema.ldif"
+    url: "https://raw.githubusercontent.com/CESNET/perun/{{ perun_ldap_schemas_perun_version }}/perun-utils/ldapc-scripts/schemas/tenOperEntry-schema.ldif"
     dest: "/etc/ldap/tenOperEntry-schema.ldif"
     force: yes
   register: tenOperEntry_schema_file

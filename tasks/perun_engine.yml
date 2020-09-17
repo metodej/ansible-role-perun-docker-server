@@ -1,0 +1,57 @@
+- name: "create perun-engine.properties"
+  template:
+    src: perun-engine.properties.j2
+    dest: /etc/perun/peruneng/perun-engine.properties
+    owner: peruneng
+    group: peruneng
+    mode: 0440
+  notify: "restart perun_engine"
+
+- name: "create logback-engine.xml"
+  template:
+    src: logback-engine.xml.j2
+    dest: /etc/perun/peruneng/logback-engine.xml
+    owner: peruneng
+    group: peruneng
+    mode: 0440
+
+- name: "create perun-engine (contains password)"
+  template:
+    src: perun-engine.j2
+    dest: /etc/perun/peruneng/perun-engine
+    owner: peruneng
+    group: peruneng
+    mode: 0440
+  notify: "restart perun_engine"
+
+- name: "create directory .ssh"
+  file:
+    state: directory
+    path: /home/peruneng/.ssh
+    owner: peruneng
+    group: peruneng
+    mode: 0700
+
+- name: "create ssh private key {{ perun_engine_ssh_privkey_file }} for accessing slaves"
+  copy:
+    src: "{{ lookup('first_found', findme) }}"
+    dest: "/home/peruneng/.ssh/{{ perun_engine_ssh_privkey_file }}"
+    owner: peruneng
+    group: peruneng
+    mode: 0600
+  vars:
+    findme:
+      - "{{ inventory_hostname }}/{{ perun_engine_ssh_privkey_file }}"
+      - "{{ perun_engine_ssh_privkey_file }}"
+
+- name: "create ssh public key {{ perun_engine_ssh_pubkey_file }} for accessing slaves"
+  copy:
+    src: "{{ lookup('first_found', findme) }}"
+    dest: "/home/peruneng/.ssh/{{ perun_engine_ssh_pubkey_file }}"
+    owner: peruneng
+    group: peruneng
+    mode: 0644
+  vars:
+    findme:
+      - "{{ inventory_hostname }}/{{ perun_engine_ssh_pubkey_file }}"
+      - "{{ perun_engine_ssh_pubkey_file }}"

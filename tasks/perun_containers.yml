@@ -37,20 +37,6 @@
       - subnet: 192.168.0.0/24
         gateway: 192.168.0.1
 
-- name: "create Perun engine container"
-  docker_container:
-    name: perun_engine
-    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_engine:{{ perun_engine_container_version }}"
-    pull: yes
-#    restart_policy: always
-    mounts:
-      - { type: volume, source: peruneng_logs, target: /var/log/perun }
-      - { type: volume, source: peruneng_home, target: /home/perun }
-      - { type: volume, source: peruneng_etc,  target: /etc/perun }
-    networks_cli_compatible: yes
-    networks:
-      - name: perun_net
-
 - name: "create Perun RPC container"
   docker_container:
     name: perun_rpc
@@ -58,12 +44,44 @@
     pull: yes
     #    restart_policy: always
     mounts:
-      - { type: volume, source: perunrpc_logs, target: /var/log/perun }
+      - { type: volume, source: perun_logs, target: /var/log/perun }
       - { type: volume, source: perunrpc_home, target: /home/perun }
       - { type: volume, source: perunrpc_etc, target: /etc/perun }
     networks_cli_compatible: yes
     networks:
       - name: perun_net
+  register: perun_rpc_container
+
+
+- name: "create Perun engine container"
+  docker_container:
+    name: perun_engine
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_engine:{{ perun_engine_container_version }}"
+    pull: yes
+#    restart_policy: always
+    mounts:
+      - { type: volume, source: perun_logs, target: /var/log/perun }
+      - { type: volume, source: peruneng_home, target: /home/perun }
+      - { type: volume, source: peruneng_etc,  target: /etc/perun }
+    networks_cli_compatible: yes
+    networks:
+      - name: perun_net
+  register: perun_engine_container
+
+- name: "create Perun LDAPc container"
+  docker_container:
+    name: perun_ldapc
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_ldapc:{{ perun_ldapc_container_version }}"
+    pull: yes
+    #    restart_policy: always
+    mounts:
+      - { type: volume, source: perun_logs, target: /var/log/perun }
+      - { type: volume, source: perunldc_home, target: /home/perun }
+      - { type: volume, source: perunldc_etc,  target: /etc/perun }
+    networks_cli_compatible: yes
+    networks:
+      - name: perun_net
+  register: perun_ldapc_container
 
 - name: "create Perun Apache container"
   docker_container:
@@ -81,3 +99,4 @@
     ports:
       - 80:80
       - 443:443
+  register: perun_apache_container

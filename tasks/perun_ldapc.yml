@@ -1,0 +1,84 @@
+- name: "compute baseDN"
+  set_fact:
+    perun_ldap_basedn: '{{ "dc=" + perun_ldap_domain.split(".") | join(",dc=") }}'
+
+- name: "compute admin DN"
+  set_fact:
+    perun_ldap_data_admin_dn: '{{ "cn=admin," + perun_ldap_basedn }}'
+
+- name: "create perun-ldapc.properties"
+  template:
+    src: perun-ldapc.properties.j2
+    dest: /etc/perun/perunldc/perun-ldapc.properties
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+  notify: "restart perun_ldapc"
+
+- name: "create jdbc.properties (contains db password)"
+  template:
+    src: jdbc.properties.j2
+    dest: /etc/perun/perunldc/jdbc.properties
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+  notify: "restart perun_ldapc"
+
+- name: "create perun-roles.yml"
+  template:
+    src: perun-roles.yml.j2
+    dest: /etc/perun/perunldc/perun-roles.yml
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+  notify: "restart perun_ldapc"
+
+- name: "create logback-ldapc.xml"
+  template:
+    src: logback-ldapc.xml.j2
+    dest: /etc/perun/perunldc/logback-ldapc.xml
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+
+- name: "create perun-ldapc"
+  template:
+    src: perun-ldapc.j2
+    dest: /etc/perun/perunldc/perun-ldapc
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+
+- name: "create perun-rpc-lib.properties"
+  template:
+    src: perun-rpc-lib.properties.j2
+    dest: /etc/perun/perunldc/perun-rpc-lib.properties
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+
+- name: "create perun-ldapc-attributes.xml"
+  template:
+    src: perun-ldapc-attributes.xml.j2
+    dest: /etc/perun/perunldc/perun-ldapc-attributes.xml
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+  notify: "restart perun_ldapc"
+
+- name: "create perun-ldapc-last-state"
+  copy:
+    force: no
+    dest: /home/perunldc/perun-ldapc-last-state
+    content: "0"
+    owner: perunldc
+    group: perunldc
+
+- name: "create jdbc.properties (contains db password)"
+  template:
+    src: jdbc.properties.j2
+    dest: /etc/perun/perunldc/jdbc.properties
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+  notify: "restart perun_ldapc"

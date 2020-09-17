@@ -1,14 +1,19 @@
-- name: "create jdbc.properties (contains db password)"
+- name: "create jdbc.properties"
   template:
     src: jdbc.properties.j2
-    dest: "{{ item }}"
+    dest: /etc/perun/perunrpc/jdbc.properties
     owner: perunrpc
     group: perunrpc
     mode: 0440
   notify: "restart perun_rpc"
-  loop:
-    - /etc/perun/perunrpc/jdbc.properties
-    - /etc/perun/perunldc/jdbc.properties
+
+- name: "create perun-roles.yml"
+  template:
+    src: perun-roles.yml.j2
+    dest: /etc/perun/perunrpc/perun-roles.yml
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
 
 - name: "create perun-web-gui.properties (contains several variables)"
   template:
@@ -28,6 +33,38 @@
     mode: 0440
   notify: "restart perun_rpc"
 
+- name: "create logback.xml"
+  template:
+    src: logback.xml.j2
+    dest: /etc/perun/perunrpc/logback.xml
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+
+- name: "create perun-cabinet.properties"
+  template:
+    src: perun-cabinet.properties.j2
+    dest: /etc/perun/perunrpc/perun-cabinet.properties
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+
+- name: "create perun-dispatcher.properties"
+  template:
+    src: perun-dispatcher.properties.j2
+    dest: /etc/perun/perunrpc/perun-dispatcher.properties
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+
+- name: "create perun-notification.properties"
+  template:
+    src: perun-notification.properties.j2
+    dest: /etc/perun/perunrpc/perun-notification.properties
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+
 - name: "create perun-extSources.xml"
   copy:
     src: "{{ lookup('first_found', findme) }}"
@@ -41,12 +78,4 @@
       - "perun-extSources.xml"
   notify: "restart perun_rpc"
 
-# does not belong here, but I am lazy to create perun_engine.yml for just a single task
-- name: "create perun-engine (contains password)"
-  template:
-    src: perun-engine.j2
-    dest: /etc/perun/peruneng/perun-engine
-    owner: peruneng
-    group: peruneng
-    mode: 0440
-  notify: "restart perun_engine"
+

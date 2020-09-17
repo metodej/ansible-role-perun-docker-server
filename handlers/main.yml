@@ -4,6 +4,7 @@
     name: perun_rpc
     state: started
     restart: yes
+  when: perun_rpc_container is not defined or not perun_rpc_container.changed
 
 - name: "restart Perun Apache"
   listen: "restart perun_apache"
@@ -11,6 +12,7 @@
     name: perun_apache
     state: started
     restart: yes
+  when: perun_apache_container is not defined or not perun_apache_container.changed
 
 - name: "restart Perun Engine"
   listen: "restart perun_engine"
@@ -18,6 +20,7 @@
     name: perun_engine
     state: started
     restart: yes
+  when: perun_engine_container is not defined or not perun_engine_container.changed
 
 - name: "restart Perun LDAPC"
   listen: "restart perun_ldapc"
@@ -25,6 +28,7 @@
     name: perun_ldapc
     state: started
     restart: yes
+  when: perun_ldapc_container is not defined or not perun_ldapc_container.changed
 
 - name: "restart ldap"
   service:

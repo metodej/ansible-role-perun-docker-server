@@ -27,4 +27,11 @@
     path: "{{ vlm.volume.Mountpoint }}"
     owner: "{{ volume.owner }}"
     group: "{{ volume.owner }}"
-    mode: 0750
+    mode: "{{ volume.mode }}"
+
+- name: "prevent changing permissions when mounted to a container"
+  copy:
+    dest: "{{ vlm.volume.Mountpoint }}/README.txt"
+    content: "this Docker volume is linked from {{ volume.link }} "
+    owner: "{{ volume.owner }}"
+    group: "{{ volume.owner }}"

@@ -1,8 +1,3 @@
-- name: "create /var/log/perun"
-  file:
-    state: directory
-    path: /var/log/perun
-
 - name: "create docker volumes for data"
   include_tasks:
     file: volume_dir.yml
@@ -10,15 +5,13 @@
       tags:
         - perun_containers
   loop:
-    - { name: 'perunrpc_logs', link: "/var/log/perun/perunrpc", owner: perunrpc }
-    - { name: 'peruneng_logs', link: "/var/log/perun/peruneng", owner: peruneng }
-    - { name: 'perunldc_logs', link: "/var/log/perun/perunldc", owner: perunldc }
-    - { name: 'perunrpc_home', link: "/home/perunrpc", owner: perunrpc }
-    - { name: 'peruneng_home', link: "/home/peruneng", owner: peruneng }
-    - { name: 'perunldc_home', link: "/home/perunldc", owner: perunldc }
-    - { name: 'perunrpc_etc',  link: "/etc/perun/perunrpc", owner: perunrpc }
-    - { name: 'peruneng_etc',  link: "/etc/perun/peruneng", owner: peruneng }
-    - { name: 'perunldc_etc',  link: "/etc/perun/perunldc", owner: perunldc }
+    - { name: 'perun_logs', link: "/var/log/perun", owner: perun, mode: '1777' }
+    - { name: 'perunrpc_home', link: "/home/perunrpc", owner: perunrpc, mode: '770' }
+    - { name: 'peruneng_home', link: "/home/peruneng", owner: peruneng, mode: '770' }
+    - { name: 'perunldc_home', link: "/home/perunldc", owner: perunldc, mode: '770' }
+    - { name: 'perunrpc_etc',  link: "/etc/perun/perunrpc", owner: perunrpc, mode: '770' }
+    - { name: 'peruneng_etc',  link: "/etc/perun/peruneng", owner: peruneng, mode: '770' }
+    - { name: 'perunldc_etc',  link: "/etc/perun/perunldc", owner: perunldc, mode: '770' }
   loop_control:
     loop_var: volume
     label: "{{ volume.name }}"

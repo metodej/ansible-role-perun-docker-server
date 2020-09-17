@@ -24,6 +24,18 @@
     - { name: peruneng, uid: 962, comment: "Perun Engine" }
     - { name: perunldc, uid: 963, comment: "Perun LDAP Connector" }
 
+- name: "add specialized perun users to group perun"
+  user:
+    name: "{{ item }}"
+    groups: perun
+    append: yes
+    system: yes
+    create_home: no
+  loop:
+    - perunrpc
+    - peruneng
+    - perunldc
+
 # ssl-cert group is created by the ssl-cert package, it is used by packages like postgres and openldap which need access to private keys
 # perun user needs access to host key for authentication when uploading to URLs
 - name: "add user perun to group ssl-cert"

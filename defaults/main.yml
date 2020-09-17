@@ -1,9 +1,16 @@
 # redefine for your machine!
-ldap_domain: "cesnet.cz"
-ldap_config_password: "test"
-ldap_data_password: "test"
-ldap_proxy_password: "test"
-ldap_schemas_perun_version: "production"
+perun_ldap_domain: "example.org"
+perun_ldap_config_password: "test"
+perun_ldap_data_password: "test"
+perun_ldap_proxy_password: "test"
+perun_ldap_schemas_perun_version: "production"
+perun_ldap_sasl_login_namespace: ""
+
+perun_ldapc_attributes_xml: |
+  <!-- no additional attributes -->
+
+perun_engine_ssh_privkey_file: id_ed25519
+perun_engine_ssh_pubkey_file: id_ed25519.pub
 
 perun_apache:
   rpc_hostname: perun.example.org
@@ -76,6 +83,7 @@ perun_rpc_git_version: production
 perun_rpc_container_version: latest
 perun_engine_container_version: latest
 perun_apache_container_version: latest
+perun_ldapc_container_version: latest
 
 # special settings for PostgreSQL
 perun_postgresql_settings:
@@ -100,7 +108,7 @@ perun_firewall_open_tcp_ports:
   - { port: 443, comment: "accept https" }
   - { port: 636, comment: "accept ldaps" }
   - { port: 5432, comment: "accept postgres" }
-#TODO open 5432 for connections from docker containers and MUNI/CESNET
+#TODO open 5432 for connections from docker containers and MUNI/CESNET only
 #  - { port: 5432, ipv6: "2001:718::/32", comment: "accept postgres from CESNET" }
 #  - { port: 5432, ipv4: "147.251.0.0/16", comment: "accept postgres from MUNI" }
 
