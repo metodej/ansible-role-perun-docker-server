@@ -1,34 +1,36 @@
-- name: "restart Perun RPC"
-  listen: "restart perun_rpc"
+- name: "restart perun_rpc"
   docker_container:
     name: perun_rpc
     state: started
     restart: yes
   when: perun_rpc_container is not defined or not perun_rpc_container.changed
 
-- name: "restart Perun Apache"
-  listen: "restart perun_apache"
+- name: "restart perun_apache"
   docker_container:
     name: perun_apache
     state: started
     restart: yes
   when: perun_apache_container is not defined or not perun_apache_container.changed
 
-- name: "restart Perun Engine"
-  listen: "restart perun_engine"
+- name: "restart perun_engine"
   docker_container:
     name: perun_engine
     state: started
     restart: yes
   when: perun_engine_container is not defined or not perun_engine_container.changed
 
-- name: "restart Perun LDAPC"
-  listen: "restart perun_ldapc"
+- name: "restart perun_ldapc"
   docker_container:
     name: perun_ldapc
     state: started
     restart: yes
   when: perun_ldapc_container is not defined or not perun_ldapc_container.changed
+
+- name: "restart portainer"
+  docker_container:
+    name: portainer
+    state: started
+    restart: yes
 
 - name: "restart ldap"
   service:

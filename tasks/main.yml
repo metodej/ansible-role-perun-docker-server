@@ -26,17 +26,19 @@
   import_tasks: perun_ldap.yml
   tags: perun_ldap
 
-- name: "Docker server setup"
+- name: "Docker and Portainer setup"
   import_tasks: perun_docker.yml
   tags: perun_docker
 
-- name: "perun user setup"
-  import_tasks: perun_user.yml
-  tags: perun_user
-
-- name: "Docker data volumes for Perun containers"
+- name: "setup of users and Docker data volumes for Perun containers"
   import_tasks: perun_volumes.yml
   tags: perun_volumes
+
+- name: "perun rpc setup"
+  import_tasks: perun_rpc.yml
+  tags:
+    - perun_rpc
+    - perun_config
 
 - name: "perun engine setup"
   import_tasks: perun_engine.yml
@@ -56,14 +58,3 @@
     - perun_apache
     - perun_config
 
-- name: "perun rpc setup"
-  import_tasks: perun_rpc.yml
-  tags:
-    - perun_rpc
-    - perun_config
-
-- name: "perun containers setup"
-  import_tasks: perun_containers.yml
-  tags:
-    - perun_containers
-    - perun_config

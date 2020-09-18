@@ -103,11 +103,11 @@
   command: /usr/bin/ldapmodify -Q -H ldapi:/// -Y EXTERNAL -f /etc/ldap/ssl.ldif
   when: ssl_ldif.changed
 
-- name: "enable secure port in /etc/default/slapd"
+- name: "enable secure port and ldap just from localhost and docker subnet in /etc/default/slapd"
   lineinfile:
     dest: /etc/default/slapd
     regexp: ^SLAPD_SERVICES=
-    line: SLAPD_SERVICES="ldaps:/// ldapi:/// ldap://127.0.0.1/"
+    line: SLAPD_SERVICES="ldaps:/// ldapi:/// ldap://127.0.0.1/ ldap://192.168.0.1/"
   register: secure_port_enabled
 
 - name: "restart OpenLDAP after enabling TLS"

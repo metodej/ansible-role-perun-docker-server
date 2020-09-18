@@ -78,4 +78,19 @@
       - "perun-extSources.xml"
   notify: "restart perun_rpc"
 
+- name: "create Perun RPC container"
+  docker_container:
+    name: perun_rpc
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_rpc:{{ perun_rpc_container_version }}"
+    pull: yes
+    #    restart_policy: always
+    mounts:
+      - { type: volume, source: perun_logs, target: /var/log/perun }
+      - { type: volume, source: perunrpc_home, target: /home/perun }
+      - { type: volume, source: perunrpc_etc, target: /etc/perun }
+    networks_cli_compatible: yes
+    networks:
+      - name: perun_net
+  register: perun_rpc_container
+
 

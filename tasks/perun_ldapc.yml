@@ -15,10 +15,20 @@
     mode: 0440
   notify: "restart perun_ldapc"
 
+# files jdbc.properties, perun.properties and perun-roles.yml are nneded because LDAPc includes Perun core
 - name: "create jdbc.properties (contains db password)"
   template:
     src: jdbc.properties.j2
     dest: /etc/perun/perunldc/jdbc.properties
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+  notify: "restart perun_ldapc"
+
+- name: "create perun.properties (contains several variables)"
+  template:
+    src: perun.properties.j2
+    dest: /etc/perun/perunldc/perun.properties
     owner: perunldc
     group: perunldc
     mode: 0440
@@ -82,3 +92,18 @@
     group: perunldc
     mode: 0440
   notify: "restart perun_ldapc"
+
+- name: "create Perun LDAPc container"
+  docker_container:
+    name: perun_ldapc
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_ldapc:{{ perun_ldapc_container_version }}"
+    pull: yes
+    #    restart_policy: always
+    mounts:
+      - { type: volume, source: perun_logs, target: /var/log/perun }
+      - { type: volume, source: perunldc_home, target: /home/perun }
+      - { type: volume, source: perunldc_etc,  target: /etc/perun }
+    networks_cli_compatible: yes
+    networks:
+      - name: perun_net
+  register: perun_ldapc_container

@@ -55,3 +55,19 @@
     findme:
       - "{{ inventory_hostname }}/{{ perun_engine_ssh_pubkey_file }}"
       - "{{ perun_engine_ssh_pubkey_file }}"
+
+- name: "create Perun engine container"
+  docker_container:
+    name: perun_engine
+    image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_engine:{{ perun_engine_container_version }}"
+    pull: yes
+    #    restart_policy: always
+    mounts:
+      - { type: volume, source: perun_logs, target: /var/log/perun }
+      - { type: volume, source: peruneng_home, target: /home/perun }
+      - { type: volume, source: peruneng_etc,  target: /etc/perun }
+    networks_cli_compatible: yes
+    networks:
+      - name: perun_net
+  register: perun_engine_container
+

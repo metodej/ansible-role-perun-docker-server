@@ -1,9 +1,41 @@
+- name: "create perun groups"
+  group:
+    name: "{{ item.name }}"
+    system: yes
+    gid: "{{ item.gid }}"
+  loop:
+    - { name: perun, gid: 960 }
+    - { name: perunrpc, gid: 961 }
+    - { name: peruneng, gid: 962 }
+    - { name: perunldc, gid: 963 }
+
+- name: "create perun users"
+  user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    group: "{{ item.name }}"
+    comment: "{{ item.comment }}"
+    shell: /bin/bash
+    system: yes
+    create_home: no
+  loop:
+    - { name: perun, uid: 960, comment: "Perun" }
+    - { name: perunrpc, uid: 961, comment: "Perun RPC" }
+    - { name: peruneng, uid: 962, comment: "Perun Engine" }
+    - { name: perunldc, uid: 963, comment: "Perun LDAP Connector" }
+
+- name: "add user perun to group docker"
+  user:
+    name: perun
+    groups: docker
+    append: yes
+
 - name: "create docker volumes for data"
   include_tasks:
     file: volume_dir.yml
     apply:
       tags:
-        - perun_containers
+        - perun_volumes
   loop:
     - { name: 'perun_logs', link: "/var/log/perun", owner: perun, mode: '1777' }
     - { name: 'perunrpc_home', link: "/home/perunrpc", owner: perunrpc, mode: '770' }
