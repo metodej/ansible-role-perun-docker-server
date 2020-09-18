@@ -1,9 +1,12 @@
-- name: "add unaccent extension"
+- name: "add extensions"
   become: yes
   become_user: postgres
   postgresql_ext:
     db: "perun"
-    name: unaccent
+    name: "{{ item }}"
+  loop:
+    - unaccent
+    - pgcrypto
 
 - name: "detect whether table users exists"
   become: yes
@@ -56,3 +59,47 @@
     minute: "20"
     user: postgres
     job: "cd /var/lib/postgresql; ./dump_psql_db.sh perun"
+
+- name: "detect whether user nagios exists"
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    session_role: perun
+    db: perun
+    query: "SELECT EXISTS ( SELECT 1 FROM users WHERE first_name='(Service)' and last_name='nagios' and service_acc)"
+  register: user_nagios
+
+- name: "create user nagios"
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    session_role: perun
+    db: perun
+    query: "insert into users (id, first_name, last_name, service_acc) values (nextval('users_id_seq'),'(Service)','nagios',true)"
+  when: not user_nagios.query_result[0].exists
+
+- name: "detect whether ues for nagios exists"
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    session_role: perun
+    db: perun
+    query: "SELECT EXISTS ( select ues.id from user_ext_sources ues join ext_sources e on (ues.ext_sources_id=e.id) where ues.login_ext='nagios' and e.name='INTERNAL' )"
+  register: ues_nagios
+
+- name: "create user_ext_source nagios"
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    session_role: perun
+    db: perun
+    query: >-
+      insert into user_ext_sources (id, user_id, login_ext, ext_sources_id, loa)
+      values (
+       nextval('user_ext_sources_id_seq'),
+       ( select id from users where first_name='(Service)' and last_name='nagios' and service_acc ),
+       'nagios',
+       ( select id from ext_sources where name='INTERNAL' ),
+       2
+      )
+  when: not ues_nagios.query_result[0].exists

@@ -24,8 +24,10 @@
   loop:
     - { name: "perun", password: "{{ perun_apache.basicAuth.common.perun }}" }
     - { name: "perun-engine", password: "{{ perun_apache.basicAuth.common['perun-engine'] }}" }
+    - { name: "nagios", password: "{{ perun_apache.basicAuth.common.nagios }}" }
   loop_control:
     label: "{{ item.name }}"
+  notify: "restart perun_apache"
 
 - name: "add additional passwords into /etc/perun/apache/perun.passwd"
   htpasswd:

@@ -20,6 +20,7 @@ perun_apache:
     common:
       perun: "test"
       perun-engine: "test"
+      nagios: "test"
     additional:
      - { name: "_oidc_server", password: "test" }
   igtf_certs: no
