@@ -56,7 +56,7 @@ perun.alternativePasswordManager.program =
 perun.recaptcha.privatekey = 6Lf0eUYUAAAAAIBxpRrA7UNrT7czQ28IoH9yiDBE
 
 # Perun properties for email validation message
-perun.mailchange.secretKey = {{ perun_rpc.key_mailchange }}
+perun.mailchange.secretKey = {{ perun_rpc_key_mailchange }}
 perun.mailchange.backupFrom = {{ perun_email }}
 perun.mailchange.validationWindow = 24
 
@@ -65,9 +65,9 @@ perun.native.language = cs,Česky,Czech
 #perun.native.language =
 
 # Perun properties for non-authz password reset (min. ASCII 16 chars/bytes for AES 128
-perun.pwdreset.secretKey = {{ perun_rpc.pwdreset_secret_key }}
+perun.pwdreset.secretKey = {{ perun_rpc_pwdreset_secret_key }}
 # Use only hexa characters (0-F) , min. 16 chars/bytes for AES 128
-perun.pwdreset.initVector = {{ perun_rpc.pwdreset_init_vector }}
+perun.pwdreset.initVector = {{ perun_rpc_pwdreset_init_vector }}
 # Password reset validity window (in hours)
 perun.pwdreset.validationWindow = 24
 
@@ -84,10 +84,10 @@ perun.readOnlyPerun=false
 perun.DBInitializatorEnabled=true
 
 # Perun instance name
-perun.instanceName = {{ perun_rpc.instance_name }}
+perun.instanceName = {{ perun_rpc_instance_name }}
 
 # Perun instance
-perun.instanceId = {{ perun_rpc.instance_id }}
+perun.instanceId = {{ perun_rpc_instance_id }}
 
 # set which user ext sources are non removable. Ext sources are divided by ';' if only extsource name is present all user extsources are non removable.
 # If ',' character is present, everything after is considered as regex and applied to user login in ext. source (such logins/dentities are then non removable).
@@ -95,19 +95,22 @@ perun.instanceId = {{ perun_rpc.instance_id }}
 perun.userExtSources.persistent=PERUN;
 
 # Comma separated list of entityIDs of proxy IdPs which is infront of Perun. So Perun can work with them differently.
-perun.proxyIdPs= {{ perun_rpc.proxy_idps }}
+perun.proxyIdPs= {{ perun_rpc_proxy_idps }}
 
 # Name of ExtSources with support for multiple identifiers
 perun.extsources.multiple.identifiers=
 
 # Comma separated names of allowed CORS domains
-perun.allowedCorsDomains={{ perun_rpc.cors_domains }}
+perun.allowedCorsDomains={{ perun_rpc_cors_domains | join(',') }}
 
 # OIDC
-perun.oidc.issuers=o1
-perun.oidc.o1.iss={{ perun_rpc.oidc.issuer }}
-perun.oidc.o1.extsource.name={{ perun_rpc.oidc.extsource_name }}
-perun.oidc.o1.extsource.type={{ perun_rpc.oidc.extsource_type }}
+perun.oidc.issuers={% for issuer in perun_rpc_oidc_issuers %}o{{ loop.index }}{% if not loop.last %},{% endif %}{% endfor %}
+
+{% for issuer in perun_rpc_oidc_issuers %}
+perun.oidc.o{{ loop.index }}.iss={{ issuer.iss }}
+perun.oidc.o{{ loop.index }}.extsource.name={{ issuer.extsource_name }}
+perun.oidc.o{{ loop.index }}.extsource.type={{ issuer.extsource_type }}
+{% endfor %}
 
 # IdP/Cert Attributes to update in PERUN
 # (override default settings, comma separated list of attribute names - passed to Tomcat)

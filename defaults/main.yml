@@ -1,4 +1,20 @@
 # redefine for your machine!
+
+perun_ngui_hostname: "perun.aai.example.org"
+
+perun_rpc_key_mailchange: "test"
+perun_rpc_pwdreset_secret_key: '123456789120123456'
+perun_rpc_pwdreset_init_vector: '0123456789ABCDEF'
+perun_rpc_instance_name: 'TESTPERUN'
+perun_rpc_instance_id: 'TP1'
+perun_rpc_proxy_idps: ""
+perun_rpc_cors_domains:
+  - "https://{{ perun_ngui_hostname }}"
+perun_rpc_oidc_issuers:
+  - iss: "https://login.example.org/oidc/"
+    extsource_name: "https://login.example.org/idp/"
+    extsource_type: "cz.metacentrum.perun.core.impl.ExtSourceId"
+
 perun_ldap_domain: "example.org"
 perun_ldap_config_password: "test"
 perun_ldap_data_password: "test"
@@ -41,7 +57,6 @@ perun_apache:
     client_id: xxx-xxxx-xxx-xxx-x-x-x-x-xxxx
     client_secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXX
   ngui:
-    hostname: perun.aai.example.org
     client_id: xxx-xxxx-xxxx-xxx-xx-xxx
     oidc_issuer: https://login.example.org/oidc/
   csp:
