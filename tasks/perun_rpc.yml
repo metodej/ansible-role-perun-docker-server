@@ -78,6 +78,15 @@
       - "perun-extSources.xml"
   notify: "restart perun_rpc"
 
+# used for logs from group synchronizations
+- name: Make /var/log/perun/groupsync" directory
+  file:
+    path: "/var/log/perun/groupsync"
+    state: directory
+    mode: '0770'
+    owner: perunrpc
+    group: perunrpc
+
 - name: "create Perun RPC container"
   docker_container:
     name: perun_rpc
