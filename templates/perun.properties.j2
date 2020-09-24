@@ -34,17 +34,17 @@ perun.rpc.powerusers = perun
 perun.perun.db.name = perun
 
 # Perun RT URL
-perun.rt.url =
-perun.rt.defaultQueue=
+perun.rt.url = {{ perun_rpc_rt_url }}
+perun.rt.defaultQueue = {{ perun_rpc_rt_defaultQueue }}
 
 # Perun service user for RT tickets
-perun.rt.serviceuser.username =
+perun.rt.serviceuser.username = {{ perun_rpc_rt_serviceuser_username }}
 
 # Perun service user for RT tickets
-perun.rt.serviceuser.password =
+perun.rt.serviceuser.password = {{ perun_rpc_rt_serviceuser_password }}
 
 # all RT tickets will be sent to this address as mails (we won't call RT API)
-perun.rt.sendToMail =
+perun.rt.sendToMail = {{ perun_rpc_rt_sendToMail }}
 
 # Program which ensures password changes
 perun.passwordManager.program = /bin/true
@@ -84,21 +84,21 @@ perun.readOnlyPerun=false
 perun.DBInitializatorEnabled=true
 
 # Perun instance name
-perun.instanceName = {{ perun_rpc_instance_name }}
+perun.instanceName={{ perun_rpc_instance_name }}
 
 # Perun instance
-perun.instanceId = {{ perun_rpc_instance_id }}
+perun.instanceId={{ perun_rpc_instance_id }}
 
 # set which user ext sources are non removable. Ext sources are divided by ';' if only extsource name is present all user extsources are non removable.
 # If ',' character is present, everything after is considered as regex and applied to user login in ext. source (such logins/dentities are then non removable).
 # Example:   ExtSourceName1;ExtSourceName2,regex2;ExtSourceName3
-perun.userExtSources.persistent=PERUN;
+perun.userExtSources.persistent={{ perun_rpc_userExtSources_persistent }}
 
 # Comma separated list of entityIDs of proxy IdPs which is infront of Perun. So Perun can work with them differently.
-perun.proxyIdPs= {{ perun_rpc_proxy_idps }}
+perun.proxyIdPs={{ perun_rpc_proxy_idps }}
 
 # Name of ExtSources with support for multiple identifiers
-perun.extsources.multiple.identifiers=
+perun.extsources.multiple.identifiers={{ perun_rpc_extsources_multiple_identifiers }}
 
 # Comma separated names of allowed CORS domains
 perun.allowedCorsDomains={{ perun_rpc_cors_domains | join(',') }}
@@ -114,9 +114,11 @@ perun.oidc.o{{ loop.index }}.extsource.type={{ issuer.extsource_type }}
 
 # IdP/Cert Attributes to update in PERUN
 # (override default settings, comma separated list of attribute names - passed to Tomcat)
-# perun.attributesForUpdate.idp=
+{% if perun_rpc_attributesForUpdate_idp is defined %}
+perun.attributesForUpdate.idp={{ perun_rpc_attributesForUpdate_idp | join(',') }}
+{% endif %}
 # perun.attributesForUpdate.x509=
-#
+perun.defaultLoa.idp={{ perun_rpc_defaultLoad_idp }}
 
 # Shared SMTP configuration, following values are default, uncomment to change them.
 #mail.smtp.host=localhost
@@ -133,9 +135,17 @@ perun.autocreatedNamespaces=
 # Default JDBC query timeout for each preparedStatement (in seconds). Set to -1 for unlimited.
 # perun.queryTimeout=-1
 
-# Secondary regexes to limit group names
-#perun.group.nameSecondaryRegex=
-#perun.group.fullNameSecondaryRegex=
 
+{% if perun_rpc_group_nameSecondaryRegex is defined %}
+# Secondary regexes to limit group names
+perun.group.nameSecondaryRegex={{ perun_rpc_group_nameSecondaryRegex }}
+{% endif %}
+{% if perun_rpc_group_fullNameSecondaryRegex is defined %}
+perun.group.fullNameSecondaryRegex={{ perun_rpc_group_fullNameSecondaryRegex }}
+{% endif %}
+
+{% if perun_rpc_attributesToSearchUsersAndMembersBy is defined %}
 # List of attributes URNs by which we search users/members (it can be user/member/ues attributes)
-#perun.attributesToSearchUsersAndMembersBy=
+perun.attributesToSearchUsersAndMembersBy={{ perun_rpc_attributesToSearchUsersAndMembersBy|join(',') }}
+{% endif %}
+

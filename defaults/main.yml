@@ -10,6 +10,14 @@ perun_ldapc_container_version: latest
 
 perun_rpc_hostname: "perun.example.org"
 perun_rpc_hostname_aliases: []
+perun_rpc_rt_url: ""
+perun_rpc_rt_defaultQueue: ""
+perun_rpc_rt_serviceuser_username: ""
+perun_rpc_rt_serviceuser_password: "test"
+perun_rpc_rt_sendToMail: "support@example.org"
+perun_rpc_userExtSources_persistent: "PERUN;"
+perun_rpc_extsources_multiple_identifiers: ""
+perun_rpc_defaultLoad_idp: "2"
 perun_rpc_key_mailchange: "test"
 perun_rpc_pwdreset_secret_key: '123456789120123456'
 perun_rpc_pwdreset_init_vector: '0123456789ABCDEF'

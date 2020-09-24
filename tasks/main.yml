@@ -6,6 +6,12 @@
       - ansible_version.full is version_compare('2.9', '>=')
     msg: "Required Ansible version is 2.9+"
 
+- name: "message-of-the-day setup"
+  copy:
+    src: motd
+    dest: /etc/motd
+  tags: motd
+
 - name: "TLS certificates setup"
   import_tasks: perun_certs.yml
   tags: perun_certs
