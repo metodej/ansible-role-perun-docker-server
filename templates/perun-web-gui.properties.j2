@@ -54,12 +54,12 @@ fedAuthz=fed
 
 # wayf.groups = { wayf config object }, // can be only local
 # should have at-least two hostnames
-wayf.cert.hosts=https://{{perun_apache.rpc_hostname}}
-wayf.spLogoutUrl=https://{{perun_apache.rpc_hostname}}/Consolidator.sso/Logout
-wayf.spLoginUrl=https://{{perun_apache.rpc_hostname}}/Consolidator.sso/Login
+wayf.cert.hosts=https://{{ perun_rpc_hostname }}
+wayf.spLogoutUrl=https://{{ perun_rpc_hostname }}/Consolidator.sso/Logout
+wayf.spLoginUrl=https://{{ perun_rpc_hostname }}/Consolidator.sso/Login
 # Custom Perun SP login/logout endpoints
-#spLoginUrl=https://{{perun_apache.rpc_hostname}}/Shibboleth.sso/Login
-#spLogoutUrl=https://{{perun_apache.rpc_hostname}}/Shibboleth.sso/logout
+#spLoginUrl=https://{{ perun_rpc_hostname }}/Shibboleth.sso/Login
+#spLogoutUrl=https://{{ perun_rpc_hostname }}/Shibboleth.sso/logout
 
 # uncomment for specific texts on Identity consolidator for Proxy IdP workflow
 #wayf.linkAnotherButton.disabled=true

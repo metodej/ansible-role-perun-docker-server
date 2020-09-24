@@ -33,3 +33,9 @@
     sudo_root_lognames: "{{ perun_sudo_root_lognames }}"
     sudo_other_lognames: "{{ perun_sudo_perun_lognames }}"
 
+- name: "set root ssh keys"
+  authorized_key:
+    user: root
+    key: "{{ perun_yubikey_users[item].rootkey }}"
+    state: present
+  loop: "{{ perun_root_users }}"

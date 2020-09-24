@@ -14,8 +14,8 @@
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
     <ApplicationDefaults
-        entityID="{{ perun_apache.shibboleth_sp.entity_id }}"
-        REMOTE_USER="{{ perun_apache.shibboleth_sp.remote_user }}"
+        entityID="{{ perun_apache_shibboleth_sp_entity_id }}"
+        REMOTE_USER="{{ perun_apache_shibboleth_sp_remote_user }}"
         attributePrefix="AJP_"
         cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
 
@@ -35,7 +35,7 @@
             entityID property and adjust discoveryURL to point to discovery service.
             You can also override entityID on /Login query string, or in RequestMap/htaccess.
             -->
-            <SSO entityID="{{ perun_apache.shibboleth_sp.idp_entity_id }}">
+            <SSO entityID="{{ perun_apache_shibboleth_sp_idp_entity_id }}">
               SAML2
             </SSO>
 
@@ -63,16 +63,16 @@
         also add your own attributes with values that can be plugged into the
         templates, e.g., helpLocation below.
         -->
-        <Errors supportContact="{{ perun_apache.shibboleth_sp.support_contact }}"
+        <Errors supportContact="{{ perun_apache_shibboleth_sp_support_contact }}"
             helpLocation="/about.html"
             styleSheet="/shibboleth-sp/main.css"/>
 
-        {{ perun_apache.shibboleth_sp.metadata_providers }}
+        {{ perun_apache_shibboleth_sp_metadata_providers }}
 
         <!-- Map to extract attributes from SAML assertions. -->
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
 
-        {{ perun_apache.shibboleth_sp.attribute_extractors  }}
+        {{ perun_apache_shibboleth_sp_attribute_extractors  }}
 
         <!-- Default filtering policy for recognized attributes, lets other data pass. -->
         <AttributeFilter type="XML" validate="true" path="attribute-policy.xml"/>
@@ -80,7 +80,7 @@
         <!-- Simple file-based resolver for using a single keypair. -->
         <CredentialResolver type="File" keyName="selfsigned" key="sp-key.pem" certificate="sp-cert.pem"/>
 
-        {{ perun_apache.shibboleth_sp.application_overrides  }}
+        {{ perun_apache_shibboleth_sp_application_overrides  }}
 
     </ApplicationDefaults>
     

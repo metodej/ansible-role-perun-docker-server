@@ -1,5 +1,5 @@
 {{ ansible_managed | comment }}
 
-perun.rpc.lib.perun.url = https://{{ perun_apache.rpc_hostname }}/ba/rpc/
+perun.rpc.lib.perun.url = https://{{ perun_rpc_hostname }}/ba/rpc/
 perun.rpc.lib.username = perun
-perun.rpc.lib.password = {{ perun_apache_basicAuth_perun_admin_password_vault }}
+perun.rpc.lib.password = {{ perun_apache_basicAuth_user_perun_password_vault }}

@@ -16,30 +16,27 @@
 - name: "add common passwords into /etc/perun/apache/perun.passwd"
   htpasswd:
     path: "/etc/perun/apache/perun.passwd"
-    name: "{{ item.name }}"
-    password: "{{ item.password }}"
+    name: "{{ item.key }}"
+    password: "{{ item.value }}"
     owner: root
     group: root
     mode: 0644
-  loop:
-    - { name: "perun", password: "{{ perun_apache.basicAuth.common.perun }}" }
-    - { name: "perun-engine", password: "{{ perun_apache.basicAuth.common['perun-engine'] }}" }
-    - { name: "nagios", password: "{{ perun_apache.basicAuth.common.nagios }}" }
+  loop: "{{ perun_apache_basicAuth_common|dict2items }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.key }}"
   notify: "restart perun_apache"
 
 - name: "add additional passwords into /etc/perun/apache/perun.passwd"
   htpasswd:
     path: "/etc/perun/apache/perun.passwd"
-    name: "{{ item.name }}"
-    password: "{{ item.password }}"
+    name: "{{ item.key }}"
+    password: "{{ item.value }}"
     owner: root
     group: root
     mode: 0644
-  loop: "{{ perun_apache.basicAuth.additional }}"
+  loop: "{{ perun_apache_basicAuth_additional|dict2items }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.key }}"
 
 - name: "install HTML pages for maintenance (contain perun_email {{ perun_email }})"
   template:
@@ -73,7 +70,7 @@
     owner: root
     group: root
     mode: 0400
-  when:  perun_apache.kerberos_enabled
+  when:  perun_apache_kerberos_enabled
 
 - name: "create /etc/perun/apache/shibboleth directory"
   file:

@@ -1,7 +1,15 @@
 # redefine for your machine!
 
-perun_ngui_hostname: "perun.aai.example.org"
+# version of containers to deploy
+perun_rpc_git_version: production
+perun_rpc_container_version: latest
+perun_engine_container_version: latest
+perun_apache_container_version: latest
+perun_ldapc_container_version: latest
 
+
+perun_rpc_hostname: "perun.example.org"
+perun_rpc_hostname_aliases: []
 perun_rpc_key_mailchange: "test"
 perun_rpc_pwdreset_secret_key: '123456789120123456'
 perun_rpc_pwdreset_init_vector: '0123456789ABCDEF'
@@ -15,11 +23,14 @@ perun_rpc_oidc_issuers:
     extsource_name: "https://login.example.org/idp/"
     extsource_type: "cz.metacentrum.perun.core.impl.ExtSourceId"
 
+perun_ngui_hostname: "perun.aai.example.org"
+perun_ngui_client_id: "xxx-xxxx-xxxx-xxx-xx-xxx"
+
 perun_ldap_domain: "example.org"
 perun_ldap_config_password: "test"
 perun_ldap_data_password: "test"
 perun_ldap_proxy_password: "test"
-perun_ldap_schemas_perun_version: "production"
+perun_ldap_schemas_perun_version: "{{ perun_ldapc_container_version }}"
 perun_ldap_sasl_login_namespace: ""
 
 perun_ldapc_attributes_xml: |
@@ -28,50 +39,53 @@ perun_ldapc_attributes_xml: |
 perun_engine_ssh_privkey_file: id_ed25519
 perun_engine_ssh_pubkey_file: id_ed25519.pub
 
-perun_apache:
-  rpc_hostname: perun.example.org
-  rpc_hostname_aliases: []
-  basicAuth:
-    # passwords for HTTP Basic Auth to RPC
-    common:
-      perun: "test"
-      perun-engine: "test"
-      nagios: "test"
-    additional:
-     - { name: "_oidc_server", password: "test" }
-  igtf_certs: no
-  fed_enabled: yes
-  fed_initiators: []
-  kerberos_enabled: no
-  kerberos_realms:
-    - name: META
-      urlmatch: '(^/krb/|^/krb-ic/)'
-    - name: EINFRA
-      urlmatch: '^/krbe/'
-    - name: EINFRA-SERVICES
-      urlmatch: '^/krbes/'
-    - name: ADMIN.META
-      urlmatch: '^/krbam/'
-  oauth:
-    introspection_url: https://login.example.org/oidc/introspection
-    client_id: xxx-xxxx-xxx-xxx-x-x-x-x-xxxx
-    client_secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  ngui:
-    client_id: xxx-xxxx-xxxx-xxx-xx-xxx
-    oidc_issuer: https://login.example.org/oidc/
-  csp:
-    script_src: ""
-    frame_src: ""
-    style_src: ""
-    font_src: ""
-    img_src: ""
-    connect_src: ""
-  special_config1: |
-    # no special directives at the start of config
-  special_config2: |
-    # no special directives at the endof config
-  shibboleth_sp:
-    attribute_map_additions: ""
+perun_apache_basicAuth_user_perun_password: "test"
+perun_apache_basicAuth_user_perun_engine_password: "test"
+perun_apache_basicAuth_user_nagios_password: "test"
+perun_apache_basicAuth_common:
+  perun: "{{ perun_apache_basicAuth_user_perun_password }}"
+  perun-engine: "{{ perun_apache_basicAuth_user_perun_engine_password }}"
+  nagios: "{{ perun_apache_basicAuth_user_nagios_password }}"
+perun_apache_basicAuth_additional: {}
+perun_apache_fed_enabled: no
+perun_apache_igtf_certs: no
+perun_apache_fed_initiators: []
+perun_apache_kerberos_enabled: no
+perun_apache_kerberos_realms:
+  - name: META
+    urlmatch: '(^/krb/|^/krb-ic/)'
+  - name: EINFRA
+    urlmatch: '^/krbe/'
+  - name: EINFRA-SERVICES
+    urlmatch: '^/krbes/'
+  - name: ADMIN.META
+    urlmatch: '^/krbam/'
+perun_apache_oauth_introspection_url: https://login.example.org/oidc/introspection
+perun_apache_oauth_client_id: xxx-xxxx-xxx-xxx-x-x-x-x-xxxx
+perun_apache_oauth_client_secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+perun_apache_csp_script_src: ""
+perun_apache_csp_frame_src: ""
+perun_apache_csp_style_src: ""
+perun_apache_csp_font_src: ""
+perun_apache_csp_img_src: ""
+perun_apache_csp_connect_src: ""
+perun_apache_special_config1: |
+  # no special directives at the start of config
+perun_apache_special_config2: |
+  # no special directives at the end of config
+
+perun_apache_shibboleth_sp_entity_id: "https://{{ perun_rpc_hostname }}/sp/shibboleth"
+perun_apache_shibboleth_sp_remote_user: "eppn epuid persistent-id targeted-id"
+perun_apache_shibboleth_sp_idp_entity_id: "https://login.example.org/idp/"
+perun_apache_shibboleth_sp_support_contact: "support@example.org"
+perun_apache_shibboleth_sp_metadata_providers: |
+  <!-- no metadata provider -->
+perun_apache_shibboleth_sp_attribute_extractors: |
+  <!-- no extractors -->
+perun_apache_shibboleth_sp_application_overrides: |
+  <!-- no overrides -->
+perun_apache_shibboleth_sp_attribute_map_additions: |
+  <!-- no additional attributes -->
 
 # Yubikey server id and key, get a new pair for each machine at https://upgrade.yubico.com/getapikey/
 perun_yubikey_id: "48695"
@@ -90,16 +104,6 @@ perun_portainer_admin_password: "test"
 perun_email: perun@cesnet.cz
 # email alias for root
 perun_root_email_address: makub@ics.muni.cz
-
-# flag to install IGTF CAs certificates
-perun_install_igtf_cas: False
-
-# version of containers to deploy
-perun_rpc_git_version: production
-perun_rpc_container_version: latest
-perun_engine_container_version: latest
-perun_apache_container_version: latest
-perun_ldapc_container_version: latest
 
 # special settings for PostgreSQL
 perun_postgresql_settings:
@@ -128,8 +132,6 @@ perun_firewall_open_tcp_ports:
   - { port: 5432, ipv6: "2001:718::/32", comment: "accept postgres from CESNET" }
   - { port: 5432, ipv4: "147.251.0.0/16", comment: "accept postgres from MUNI" }
 
-
-
 # debian repos to use for automatic updates
 perun_unattended_upgrades_origin_patterns: |2
             "origin=Debian,codename=${distro_codename}";
@@ -142,11 +144,14 @@ perun_unattended_upgrades_blacklist: |2
             "slapd";
 
 # users for Yubikeys
+perun_root_users:
+  - tesla
 perun_yubikey_users:
   tesla:
     name: Nikola Tesla
     yubikeys:
       - ccccccefghij
+    rootkey: ssh-rsa bleble card:001
     sshkeys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDe9Rb2N5aq5qYAi8OCeQKlpOBJi/Ll2tlxqiD7Gan7wJrFBbrZIj8a5tOpHKTm61ldihxG7hnXkyEvbAX5vx/6lLagKaLFL3ysh3iH3ZxiXFYXfLklqrrCK2kuwdCIasMF4kJYzS/goLEGeqBkeJN8SvTj2THvzWcvsTZXIgXygzqiiSKlJao2v62EZv3Pi0eP8KhLrdYW2EcePBOKclLGYxdAX0k9KMJHJRecQhS2BtDLDL1rGoCCrw3Pd8689xovzYKC/ATnTZ89slA9HlrKyQjkjVeBX7WbRsjrgYKEDeqWZbdzjT9Nhg/Ftewbqh2V6p8OFQTftKUOmmPXlwAr
   einstein:
@@ -155,4 +160,3 @@ perun_yubikey_users:
       - ccccccghijkl
     sshkeys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQiusTXxPGdXXzhHyU9wEb1i5PAdN/qBX8lVw90/yZo6LKBl+fO2QuRTQUxxRgk05puXYwWMF4IheoVBmWFzwClyH/Ox88Yq+WM4nGxIpzvoyUZQ0rRM7a0LfaLvDsJpkoMOr53LFfQtdTY7ZiKXsaTI1EmhHXVmfgFXDTu4IE2EBGUrKPj28+yD/5UuyybA/TfZJ6wW51M0QAaQy3n2xWY+K+aFfTJv2vQin2cIjIPMWfUoUCR2eYNbtZ/uHwXgJxK1W3PeeJhLjW8RXdfLiSOA3+8X5NCHGBs5BLdvieQjB0SYb0NqCc7scAlJV14MGlWdBYuczV2gvn2mnT4q3F
-
