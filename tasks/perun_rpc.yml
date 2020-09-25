@@ -49,6 +49,14 @@
     group: perunrpc
     mode: 0440
 
+- name: "create perun-registrar-lib.properties"
+  template:
+    src: perun-registrar-lib.properties.j2
+    dest: /etc/perun/perunrpc/perun-registrar-lib.properties
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+
 - name: "create perun-dispatcher.properties"
   template:
     src: perun-dispatcher.properties.j2
