@@ -146,7 +146,7 @@ perun_postgresql_settings:
 ######################
 # You do not need to modify value below
 ######################
-perun_postgresql_version: 12
+perun_postgresql_version: 13
 
 # directory with SSL/TLS certificates and keys
 perun_certs_dir: "/etc/perun/ssl"
