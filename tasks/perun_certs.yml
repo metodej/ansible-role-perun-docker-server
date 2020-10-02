@@ -9,7 +9,7 @@
 
 - name: "set host key"
   copy:
-    src: "{{ inventory_hostname }}/hostkey.pem"
+    src: "{{ perun_instance_hostname }}/hostkey.pem"
     dest: "{{ perun_certificate_key_file }}"
     owner: root
     group: ssl-cert
@@ -21,7 +21,7 @@
 
 - name: "set host certificate"
   copy:
-    src: "{{ inventory_hostname }}/hostcert.pem"
+    src: "{{ perun_instance_hostname }}/hostcert.pem"
     dest: "{{ perun_certificate_file}}"
     owner: root
     group: root
@@ -33,7 +33,7 @@
 
 - name: "set host chain"
   copy:
-    src: "{{ inventory_hostname }}/hostchain.pem"
+    src: "{{ perun_instance_hostname }}/hostchain.pem"
     dest: "{{ perun_certificate_chain_file }}"
     owner: root
     group: root
@@ -51,7 +51,7 @@
 
 - name: "set NGUI key"
   copy:
-    src: "{{ inventory_hostname }}/nguikey.pem"
+    src: "{{ perun_instance_hostname }}/nguikey.pem"
     dest: "{{ perun_certs_dir }}/nguikey.pem"
     owner: root
     group: ssl-cert
@@ -61,7 +61,7 @@
 
 - name: "set NGUI certificate"
   copy:
-    src: "{{ inventory_hostname }}/nguicert.pem"
+    src: "{{ perun_instance_hostname }}/nguicert.pem"
     dest: "{{ perun_certs_dir }}/nguicert.pem"
     owner: root
     group: root
@@ -71,7 +71,7 @@
 
 - name: "set NGUI chain"
   copy:
-    src: "{{ inventory_hostname }}/nguichain.pem"
+    src: "{{ perun_instance_hostname }}/nguichain.pem"
     dest: "{{ perun_certs_dir }}/nguichain.pem"
     owner: root
     group: root

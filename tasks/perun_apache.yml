@@ -65,7 +65,7 @@
 
 - name: "set Kerberos keytab"
   copy:
-    src: "{{ inventory_hostname }}/krb5.http.keytab"
+    src: "{{ perun_instance_hostname }}/krb5.http.keytab"
     dest: "/etc/perun/apache/krb5.http.keytab"
     owner: root
     group: root
@@ -103,7 +103,7 @@
 
 - name: "create sp-key.pem"
   copy:
-    src: "{{ inventory_hostname }}/sp-key.pem"
+    src: "{{ perun_instance_hostname }}/sp-key.pem"
     dest: /etc/perun/apache/shibboleth/sp-key.pem
     owner: root
     group: root
@@ -111,7 +111,7 @@
 
 - name: "create sp-cert.pem"
   copy:
-    src: "{{ inventory_hostname }}/sp-cert.pem"
+    src: "{{ perun_instance_hostname }}/sp-cert.pem"
     dest: /etc/perun/apache/shibboleth/sp-cert.pem
     owner: root
     group: root

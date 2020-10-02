@@ -41,7 +41,7 @@
     mode: 0600
   vars:
     findme:
-      - "{{ inventory_hostname }}/{{ perun_engine_ssh_privkey_file }}"
+      - "{{ perun_instance_hostname }}/{{ perun_engine_ssh_privkey_file }}"
       - "{{ perun_engine_ssh_privkey_file }}"
 
 - name: "create ssh public key {{ perun_engine_ssh_pubkey_file }} for accessing slaves"
@@ -53,7 +53,7 @@
     mode: 0644
   vars:
     findme:
-      - "{{ inventory_hostname }}/{{ perun_engine_ssh_pubkey_file }}"
+      - "{{ perun_instance_hostname }}/{{ perun_engine_ssh_pubkey_file }}"
       - "{{ perun_engine_ssh_pubkey_file }}"
 
 - name: "create Perun engine container"

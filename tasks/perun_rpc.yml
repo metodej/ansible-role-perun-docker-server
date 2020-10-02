@@ -82,7 +82,7 @@
     mode: 0440
   vars:
     findme:
-      - "{{ inventory_hostname }}/perun-extSources.xml"
+      - "{{ perun_instance_hostname }}/perun-extSources.xml"
       - "perun-extSources.xml"
   notify: "restart perun_rpc"
 

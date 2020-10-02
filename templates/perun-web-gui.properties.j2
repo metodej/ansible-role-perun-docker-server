@@ -12,7 +12,7 @@ namespacesForPreferredGroupNames=
 vosToSkipCaptchaFor=
 nativeLanguage={{ perun_oldgui_nativeLanguage }}
 getIdentityConsolidatorUrl=
-#disableCreateVo=true
+disableCreateVo={{ perun_oldgui_disableCreateVo }}
 
 # GDPR agreement logic for admins in Perun. Any admin is required to agree with the last version of the text.
 # His approvals are stored in "urn:perun:user:attribute-def:def:gdprAdminApprovedVersions".
@@ -70,7 +70,7 @@ fedAuthz=fed
 
 {% if perun_oldgui_privacyPolicyLink is defined %}
 # Link to Privacy Policy
-privacyPolicyLink={{ privacyPolicyLink }}
+privacyPolicyLink={{ perun_oldgui_privacyPolicyLink }}
 {% endif %}
 
 # wayf.groups = { wayf config object }, // can be only local
@@ -116,11 +116,11 @@ registrar.enforceProxy={{ perun_oldgui_registrar_enforceProxy }}
 # defines urn of user attributes that should be displayed on personal page
 # you can force showing custom name and/or description like [name]urn[description]
 # or you can have translated like: [English|NativeName]urn:perun:user:attribute-def:core:displayName[English|NativeDescription]
-profile.personal.showAttributes={{ perun_oldgui_profile_personal_showAttributes|join(',') }}
+profile.personal.showAttributes={{ perun_oldgui_profile_personal_showAttributes|join(', ') }}
 
 ### {pages to hide: 'identities', 'organizations', 'groups', 'resources', 'privacy'}
-profile.hidePages={{ perun_oldgui_profile_hidePages|join(',') }}
+profile.hidePages={{ perun_oldgui_profile_hidePages|join(', ') }}
 
 ### {pages to hide in settings: 'sshkeys', 'preferredgroupnames', 'preferredshells', 'dataquotas','altpasswords','samba'}
-profile.settings.hidePages={{ perun_oldgui_profile_settings_hidePages|join(',') }}
+profile.settings.hidePages={{ perun_oldgui_profile_settings_hidePages|join(', ') }}
 
