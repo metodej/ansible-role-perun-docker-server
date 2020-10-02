@@ -47,6 +47,7 @@
     - "templates/maintenance/*"
 
 - name: "create /etc/perun/apache/instanceConfig.json"
+  when: perun_rpc_oidc_issuers is defined and perun_rpc_oidc_issuers
   template:
     src: instanceConfig.json
     dest: /etc/perun/apache/
@@ -58,6 +59,7 @@
   notify: "restart perun_apache"
 
 - name: "create /etc/perun/apache/sites-enabled/perun-ngui.conf"
+  when: perun_rpc_oidc_issuers is defined and perun_rpc_oidc_issuers
   template:
     src: perun-ngui.conf.j2
     dest: /etc/perun/apache/sites-enabled/perun-ngui.conf
