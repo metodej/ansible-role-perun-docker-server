@@ -9,3 +9,10 @@ dispatcher.rescheduleInterval=48
 perun.principal.name=perunDispatcher
 perun.principal.extSourceName=INTERNAL
 perun.principal.extSourceType=cz.metacentrum.perun.core.impl.ExtSourceInternal
+
+{% if perun_dispatcher_task_delay_time is defined %}
+dispatcher.task.delay.time={{ perun_dispatcher_task_delay_time }}
+{% endif %}
+{% if perun_dispatcher_task_delay_count is defined %}
+dispatcher.task.delay.count={{ perun_dispatcher_task_delay_count }}
+{% endif %}

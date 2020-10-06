@@ -62,6 +62,9 @@
   copy:
     dest: "{{ perun_certs_dir }}/portainer_admin_password.txt"
     content: "{{ perun_portainer_admin_password }}"
+    owner: root
+    group: perun
+    mode: '0640'
 
 - name: "install portainer container"
   docker_container:
@@ -76,6 +79,7 @@
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
       - "{{ perun_certs_dir }}:{{ perun_certs_dir }}:ro"
+  register: portainer_container
 
 - name: "login into gitlab docker registry"
   docker_login:

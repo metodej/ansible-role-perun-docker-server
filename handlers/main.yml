@@ -31,6 +31,7 @@
     name: portainer
     state: started
     restart: yes
+  when: portainer_container is defined and not portainer_container.changed
 
 - name: "restart ldap"
   service:

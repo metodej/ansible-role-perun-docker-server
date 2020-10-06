@@ -68,12 +68,16 @@
     mode: 0440
 
 - name: "create perun-ldapc-attributes.xml"
-  template:
-    src: perun-ldapc-attributes.xml.j2
+  copy:
+    src: "{{ lookup('first_found', findme) }}"
     dest: /etc/perun/perunldc/perun-ldapc-attributes.xml
     owner: perunldc
     group: perunldc
     mode: 0440
+  vars:
+    findme:
+      - "{{ perun_instance_hostname }}/perun-ldapc-attributes.xml"
+      - "perun-ldapc-attributes.xml"
   notify: "restart perun_ldapc"
 
 - name: "create perun-ldapc-last-state"

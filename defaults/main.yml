@@ -81,9 +81,6 @@ perun_ldap_proxy_password: "test"
 perun_ldap_schemas_perun_version: "{{ perun_ldapc_container_version }}"
 perun_ldap_sasl_login_namespace: ""
 
-perun_ldapc_attributes_xml: |
-  <!-- no additional attributes -->
-
 perun_engine_ssh_privkey_file: id_ed25519
 perun_engine_ssh_pubkey_file: id_ed25519.pub
 
