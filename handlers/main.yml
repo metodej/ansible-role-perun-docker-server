@@ -37,3 +37,10 @@
   service:
     name: slapd
     state: restarted
+  when: ansible_facts.services['slapd'] is defined and ansible_facts.services['slapd'].state=='running'
+
+- name: "restart postgres"
+  service:
+    name: postgresql
+    state: restarted
+  when: ansible_facts.services['postgresql'] is defined and ansible_facts.services['postgresql'].state=='running'

@@ -106,7 +106,7 @@
 		<appender name="sift-${logFileName}" class="ch.qos.logback.core.rolling.RollingFileAppender">
 			<file>${LOGDIR}${logFileName}.log</file>
 			<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-				<fileNamePattern>${LOGDIR}${logFileName}.log.%d.%i</fileNamePattern>
+				<fileNamePattern>${LOGDIR}${logFileName}.log.%d.%i.gz</fileNamePattern>
 				<maxFileSize>100MB</maxFileSize>
 				<maxHistory>${MAXHISTORY}</maxHistory>
 				<totalSizeCap>1GB</totalSizeCap>
@@ -178,7 +178,7 @@
 	<appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="perun-dispatcher">
 		<file>${LOGDIR}perun-dispatcher.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-			<fileNamePattern>${LOGDIR}perun-dispatcher.log.%d.%i</fileNamePattern>
+			<fileNamePattern>${LOGDIR}perun-dispatcher.log.%d.%i.gz</fileNamePattern>
 			<maxFileSize>100MB</maxFileSize>
 			<maxHistory>${MAXHISTORY}</maxHistory>
 			<totalSizeCap>1GB</totalSizeCap>

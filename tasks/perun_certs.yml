@@ -18,6 +18,7 @@
     - "restart perun_apache"
     - "restart portainer"
     - "restart ldap"
+    - "restart postgres"
 
 - name: "set host certificate"
   copy:
@@ -30,6 +31,7 @@
   notify:
     - "restart perun_apache"
     - "restart ldap"
+    - "restart postgres"
 
 - name: "set host chain"
   copy:
@@ -41,6 +43,7 @@
   notify:
     - "restart perun_apache"
     - "restart ldap"
+    - "restart postgres"
 
 - name: "assemble full chain (for portainer)"
   shell:

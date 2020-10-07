@@ -95,11 +95,15 @@ perun.userExtSources.persistent={{ perun_rpc_userExtSources_persistent }}
 # Comma separated list of entityIDs of proxy IdPs which is infront of Perun. So Perun can work with them differently.
 perun.proxyIdPs={{ perun_rpc_proxy_idps }}
 
-# Name of ExtSources with support for multiple identifiers
-perun.extsources.multiple.identifiers={{ perun_rpc_extsources_multiple_identifiers }}
+{% if perun_rpc_attributesForUpdate_idp is defined %}
+# IdP/Cert Attributes to update in PERUN
+perun.attributesForUpdate.idp={{ perun_rpc_attributesForUpdate_idp | join(',') }}
+{% endif %}
 
+{% if perun_rpc_cors_domains %}
 # Comma separated names of allowed CORS domains
 perun.allowedCorsDomains={{ perun_rpc_cors_domains | join(',') }}
+{% endif %}
 
 # OIDC
 perun.oidc.issuers={% for issuer in perun_rpc_oidc_issuers %}o{{ loop.index }}{% if not loop.last %},{% endif %}{% endfor %}
@@ -109,14 +113,6 @@ perun.oidc.o{{ loop.index }}.iss={{ issuer.iss }}
 perun.oidc.o{{ loop.index }}.extsource.name={{ issuer.extsource_name }}
 perun.oidc.o{{ loop.index }}.extsource.type={{ issuer.extsource_type }}
 {% endfor %}
-
-# IdP/Cert Attributes to update in PERUN
-# (override default settings, comma separated list of attribute names - passed to Tomcat)
-{% if perun_rpc_attributesForUpdate_idp is defined %}
-perun.attributesForUpdate.idp={{ perun_rpc_attributesForUpdate_idp | join(',') }}
-{% endif %}
-# perun.attributesForUpdate.x509=
-perun.defaultLoa.idp={{ perun_rpc_defaultLoa_idp }}
 
 # Shared SMTP configuration, following values are default, uncomment to change them.
 #mail.smtp.host=localhost
@@ -133,6 +129,10 @@ perun.autocreatedNamespaces=
 # Default JDBC query timeout for each preparedStatement (in seconds). Set to -1 for unlimited.
 # perun.queryTimeout=-1
 
+# Name of ExtSources with support for multiple identifiers
+perun.extsources.multiple.identifiers={{ perun_rpc_extsources_multiple_identifiers }}
+
+perun.defaultLoa.idp={{ perun_rpc_defaultLoa_idp }}
 
 {% if perun_rpc_group_nameSecondaryRegex is defined %}
 # Secondary regexes to limit group names
@@ -142,7 +142,5 @@ perun.group.nameSecondaryRegex={{ perun_rpc_group_nameSecondaryRegex }}
 perun.group.fullNameSecondaryRegex={{ perun_rpc_group_fullNameSecondaryRegex }}
 {% endif %}
 
-{% if perun_rpc_attributesToSearchUsersAndMembersBy is defined %}
 # List of attributes URNs by which we search users/members (it can be user/member/ues attributes)
 perun.attributesToSearchUsersAndMembersBy={{ perun_rpc_attributesToSearchUsersAndMembersBy|join(',') }}
-{% endif %}

@@ -9,7 +9,7 @@
 - name: "create perun-ldapc.properties"
   template:
     src: perun-ldapc.properties.j2
-    dest: /etc/perun/perunldc/perun-ldapc.properties
+    dest: /etc/perun/ldapc/perun-ldapc.properties
     owner: perunldc
     group: perunldc
     mode: 0440
@@ -19,7 +19,7 @@
 - name: "create jdbc.properties (contains db password)"
   template:
     src: jdbc.properties.j2
-    dest: /etc/perun/perunldc/jdbc.properties
+    dest: /etc/perun/ldapc/jdbc.properties
     owner: perunldc
     group: perunldc
     mode: 0440
@@ -28,7 +28,7 @@
 - name: "create perun.properties (contains several variables)"
   template:
     src: perun.properties.j2
-    dest: /etc/perun/perunldc/perun.properties
+    dest: /etc/perun/ldapc/perun.properties
     owner: perunldc
     group: perunldc
     mode: 0440
@@ -37,7 +37,7 @@
 - name: "create perun-roles.yml"
   template:
     src: perun-roles.yml.j2
-    dest: /etc/perun/perunldc/perun-roles.yml
+    dest: /etc/perun/ldapc/perun-roles.yml
     owner: perunldc
     group: perunldc
     mode: 0440
@@ -46,7 +46,7 @@
 - name: "create logback-ldapc.xml"
   template:
     src: logback-ldapc.xml.j2
-    dest: /etc/perun/perunldc/logback-ldapc.xml
+    dest: /etc/perun/ldapc/logback-ldapc.xml
     owner: perunldc
     group: perunldc
     mode: 0440
@@ -54,7 +54,7 @@
 - name: "create perun-ldapc"
   template:
     src: perun-ldapc.j2
-    dest: /etc/perun/perunldc/perun-ldapc
+    dest: /etc/perun/ldapc/perun-ldapc
     owner: perunldc
     group: perunldc
     mode: 0440
@@ -62,7 +62,7 @@
 - name: "create perun-rpc-lib.properties"
   template:
     src: perun-rpc-lib.properties.j2
-    dest: /etc/perun/perunldc/perun-rpc-lib.properties
+    dest: /etc/perun/ldapc/perun-rpc-lib.properties
     owner: perunldc
     group: perunldc
     mode: 0440
@@ -70,7 +70,7 @@
 - name: "create perun-ldapc-attributes.xml"
   copy:
     src: "{{ lookup('first_found', findme) }}"
-    dest: /etc/perun/perunldc/perun-ldapc-attributes.xml
+    dest: /etc/perun/ldapc/perun-ldapc-attributes.xml
     owner: perunldc
     group: perunldc
     mode: 0440
@@ -91,7 +91,7 @@
 - name: "create jdbc.properties (contains db password)"
   template:
     src: jdbc.properties.j2
-    dest: /etc/perun/perunldc/jdbc.properties
+    dest: /etc/perun/ldapc/jdbc.properties
     owner: perunldc
     group: perunldc
     mode: 0440

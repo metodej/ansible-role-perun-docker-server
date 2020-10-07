@@ -15,9 +15,9 @@
     - { name: 'perunrpc_home', link: "/home/perunrpc", owner: perunrpc, mode: '770' }
     - { name: 'peruneng_home', link: "/home/peruneng", owner: peruneng, mode: '770' }
     - { name: 'perunldc_home', link: "/home/perunldc", owner: perunldc, mode: '770' }
-    - { name: 'perunrpc_etc',  link: "/etc/perun/perunrpc", owner: perunrpc, mode: '770' }
-    - { name: 'peruneng_etc',  link: "/etc/perun/peruneng", owner: peruneng, mode: '770' }
-    - { name: 'perunldc_etc',  link: "/etc/perun/perunldc", owner: perunldc, mode: '770' }
+    - { name: 'perunrpc_etc',  link: "/etc/perun/rpc", owner: perunrpc, mode: '770' }
+    - { name: 'peruneng_etc',  link: "/etc/perun/engine", owner: peruneng, mode: '770' }
+    - { name: 'perunldc_etc',  link: "/etc/perun/ldapc", owner: perunldc, mode: '770' }
   loop_control:
     loop_var: volume
     label: "{{ volume.name }}"

@@ -50,6 +50,8 @@ perun_oldgui_getAttributesListForUserTables:
 perun_oldgui_getSupportedPasswordNamespaces: ""
 perun_oldgui_getReCaptchaPublicKey: '6Lf0eUYUAAAAAAQuoyjZCrK9DztF4e-wF23PBPFR'
 perun_oldgui_language_switch_disabled: 'false'
+perun_oldgui_cert_hosts:
+  - "https://{{ perun_rpc_hostname }}"
 perun_oldgui_logoUrl: 'img/logo.png'
 perun_oldgui_nativeLanguage: 'cs,\u010Cesky,Czech'
 perun_oldgui_language_supported: 'cs'
@@ -60,6 +62,11 @@ perun_oldgui_profile_personal_showAttributes:
 perun_oldgui_profile_hidePages:  [ 'settings' ]
 perun_oldgui_profile_settings_hidePages: [ 'sshkeys', 'dataquotas']
 perun_oldgui_disableCreateVo: 'false'
+perun_rpc_attributesToSearchUsersAndMembersBy:
+  - urn:perun:user:attribute-def:def:preferredMail
+  - urn:perun:member:attribute-def:def:mail
+  - urn:perun:ues:attribute-def:def:eppn
+  - urn:perun:ues:attribute-def:def:epuid
 
 # new GUI
 perun_ngui_hostname: "perun.aai.example.org"
@@ -72,6 +79,10 @@ perun_registrar_fedAuthz: 'fed'
 # perun-cabinet.properties
 perun_cabinet_mu_login: ""
 perun_cabinet_mu_password: ""
+
+# perun-notification.properties
+perun_notification_emailFrom: "perun@localhost"
+perun_notification_fromText: "Test message"
 
 # LDAP
 perun_ldap_domain: "example.org"

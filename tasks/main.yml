@@ -6,6 +6,9 @@
       - ansible_version.full is version_compare('2.9', '>=')
     msg: "Required Ansible version is 2.9+"
 
+- name: "get OS service facts"
+  service_facts:
+
 - name: "message-of-the-day setup"
   copy:
     src: motd

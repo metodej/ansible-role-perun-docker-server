@@ -75,9 +75,9 @@ privacyPolicyLink={{ perun_oldgui_privacyPolicyLink }}
 
 # wayf.groups = { wayf config object }, // can be only local
 # should have at-least two hostnames
-wayf.cert.hosts=https://{{ perun_rpc_hostname }}
-wayf.spLogoutUrl=https://{{ perun_rpc_hostname }}/Consolidator.sso/Logout
-wayf.spLoginUrl=https://{{ perun_rpc_hostname }}/Consolidator.sso/Login
+wayf.cert.hosts={{ perun_oldgui_cert_hosts|join(',') }}
+wayf.spLogoutUrl=/Consolidator.sso/Logout
+wayf.spLoginUrl=/Consolidator.sso/Login
 # Custom Perun SP login/logout endpoints
 #spLoginUrl=https://{{ perun_rpc_hostname }}/Shibboleth.sso/Login
 #spLogoutUrl=https://{{ perun_rpc_hostname }}/Shibboleth.sso/logout

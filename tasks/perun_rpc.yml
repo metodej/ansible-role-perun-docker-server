@@ -1,7 +1,7 @@
 - name: "create jdbc.properties"
   template:
     src: jdbc.properties.j2
-    dest: /etc/perun/perunrpc/jdbc.properties
+    dest: /etc/perun/rpc/jdbc.properties
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -10,7 +10,7 @@
 - name: "create perun-roles.yml"
   template:
     src: perun-roles.yml.j2
-    dest: /etc/perun/perunrpc/perun-roles.yml
+    dest: /etc/perun/rpc/perun-roles.yml
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -18,7 +18,7 @@
 - name: "create perun-web-gui.properties (contains several variables)"
   template:
     src: perun-web-gui.properties.j2
-    dest: /etc/perun/perunrpc/perun-web-gui.properties
+    dest: /etc/perun/rpc/perun-web-gui.properties
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -27,7 +27,7 @@
 - name: "create perun.properties (contains several variables)"
   template:
     src: perun.properties.j2
-    dest: /etc/perun/perunrpc/perun.properties
+    dest: /etc/perun/rpc/perun.properties
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -36,7 +36,7 @@
 - name: "create logback.xml"
   template:
     src: logback.xml.j2
-    dest: /etc/perun/perunrpc/logback.xml
+    dest: /etc/perun/rpc/logback.xml
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -44,7 +44,7 @@
 - name: "create perun-cabinet.properties"
   template:
     src: perun-cabinet.properties.j2
-    dest: /etc/perun/perunrpc/perun-cabinet.properties
+    dest: /etc/perun/rpc/perun-cabinet.properties
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -52,7 +52,7 @@
 - name: "create perun-registrar-lib.properties"
   template:
     src: perun-registrar-lib.properties.j2
-    dest: /etc/perun/perunrpc/perun-registrar-lib.properties
+    dest: /etc/perun/rpc/perun-registrar-lib.properties
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -60,7 +60,7 @@
 - name: "create perun-dispatcher.properties"
   template:
     src: perun-dispatcher.properties.j2
-    dest: /etc/perun/perunrpc/perun-dispatcher.properties
+    dest: /etc/perun/rpc/perun-dispatcher.properties
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -68,7 +68,7 @@
 - name: "create perun-notification.properties"
   template:
     src: perun-notification.properties.j2
-    dest: /etc/perun/perunrpc/perun-notification.properties
+    dest: /etc/perun/rpc/perun-notification.properties
     owner: perunrpc
     group: perunrpc
     mode: 0440
@@ -76,7 +76,7 @@
 - name: "create perun-extSources.xml"
   copy:
     src: "{{ lookup('first_found', findme) }}"
-    dest: "/etc/perun/perunrpc/perun-extSources.xml"
+    dest: "/etc/perun/rpc/perun-extSources.xml"
     owner: perunrpc
     group: perunrpc
     mode: 0440

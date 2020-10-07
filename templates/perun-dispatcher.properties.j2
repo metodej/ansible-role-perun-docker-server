@@ -2,13 +2,14 @@
 dispatcher.ip.address=perun_rpc
 dispatcher.port=6071
 dispatcher.enabled=true
-# number of hours before DONE tasks are propagated again
-dispatcher.rescheduleInterval=48
 
 # Set internal Dispatcher identity
 perun.principal.name=perunDispatcher
 perun.principal.extSourceName=INTERNAL
 perun.principal.extSourceType=cz.metacentrum.perun.core.impl.ExtSourceInternal
+
+# number of hours before DONE tasks are propagated again
+dispatcher.rescheduleInterval=48
 
 {% if perun_dispatcher_task_delay_time is defined %}
 dispatcher.task.delay.time={{ perun_dispatcher_task_delay_time }}

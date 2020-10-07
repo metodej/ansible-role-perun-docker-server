@@ -1,7 +1,7 @@
 - name: "create perun-engine.properties"
   template:
     src: perun-engine.properties.j2
-    dest: /etc/perun/peruneng/perun-engine.properties
+    dest: /etc/perun/engine/perun-engine.properties
     owner: peruneng
     group: peruneng
     mode: 0440
@@ -10,7 +10,7 @@
 - name: "create logback-engine.xml"
   template:
     src: logback-engine.xml.j2
-    dest: /etc/perun/peruneng/logback-engine.xml
+    dest: /etc/perun/engine/logback-engine.xml
     owner: peruneng
     group: peruneng
     mode: 0440
@@ -18,7 +18,7 @@
 - name: "create perun-engine (contains password)"
   template:
     src: perun-engine.j2
-    dest: /etc/perun/peruneng/perun-engine
+    dest: /etc/perun/engine/perun-engine
     owner: peruneng
     group: peruneng
     mode: 0440
