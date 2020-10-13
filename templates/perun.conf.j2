@@ -90,7 +90,6 @@ ShibCompatValidUser on
   RewriteRule  .*              -    [R=400,L]
 
 {{ perun_apache_special_config1 }}
-
   ####################################
   ##      MAINTENANCE             ####
   ####################################
@@ -102,6 +101,16 @@ ShibCompatValidUser on
   #RewriteCond %{REQUEST_URI} !^/Shibboleth.sso/
   #RewriteRule .* /maintenance/maintenance.html [R,L]
 
+{% if perun_apache_default_gui_enabled %}
+  ####################################
+  ##     Default GUI              ####
+  ####################################
+  RewriteCond %{REQUEST_URI} ^[/]?$ [OR]
+  RewriteCond %{REQUEST_URI} ^/gui[/]?$
+  RewriteCond %{HTTPS} on
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/fed/gui/ [L]
+{% endif %}
+
   ####################################
   ##     RPC                      ####
   ####################################
@@ -109,6 +118,7 @@ ShibCompatValidUser on
   # General rewrite rule
   RewriteRule ^/(.*)/rpc/(.*)$ ajp://perun_rpc:8009/perun-rpc/$2 [P,QSA,E=AJP_SSL_CLIENT_VERIFY:%{SSL:SSL_CLIENT_VERIFY},E=AJP_SSL_CLIENT_I_DN:%{SSL:SSL_CLIENT_I_DN},E=AJP_SSL_CLIENT_S_DN:%{SSL:SSL_CLIENT_S_DN},E=AJP_SSL_CLIENT_CERT:%{SSL:SSL_CLIENT_CERT}]
 
+{{ perun_apache_other_rewrites }}
   ####################################
   ##     GUI                      ####
   ####################################
@@ -122,7 +132,8 @@ ShibCompatValidUser on
   RewriteCond %{REQUEST_URI} ^/(.*)/registrar$
   RewriteRule (.*) %{REQUEST_URI}/ [R=301,L]
 
-  RewriteRule ^/(.*)/registrar/?$ /var/www/perun-wui/PerunRegistrar.html [L]
+  RewriteRule ^/registrar[/]?$ https://%{HTTP_HOST}/fed/registrar/ [L,R=301]
+  RewriteRule ^/(.*)/registrar/?$ /var/www/perun-wui/PerunRegistrar{{ perun_apache_registrar_html_suffix }}.html [L]
   RewriteRule ^/(.*)/registrar/(.+)$ /var/www/perun-wui/$2 [L]
 
   ####################################
@@ -144,12 +155,18 @@ ShibCompatValidUser on
     Require shib-session
   </Location>
 
+{% if perun_apache_consolidator_forceAuthn %}
+  <LocationMatch "^/Consolidator.sso/Login">
+    ShibRequestSetting forceAuthn On
+  </LocationMatch>
+{% endif %}
+
   RewriteRule ^/(krb|cert)-ic/ic$ https://%{HTTP_HOST}/$1/ic/ [L,R=301]
-  RewriteRule ^/(krb|cert)-ic/ic/$ /var/www/perun-wui/PerunConsolidator.html [L]
+  RewriteRule ^/(krb|cert)-ic/ic/$ /var/www/perun-wui/PerunConsolidator{{ perun_apache_consolidator_html_suffix }}.html [L]
   RewriteRule ^/(krb|cert)-ic/ic/(.+)$ /var/www/perun-wui/$2 [L]
 
   RewriteRule ^/(.*)-ic/ic$ https://%{HTTP_HOST}/$1/ic/ [L,R=301]
-  RewriteRule ^/(.*)-ic/ic/$ /var/www/perun-wui/PerunConsolidator.html [L]
+  RewriteRule ^/(.*)-ic/ic/$ /var/www/perun-wui/PerunConsolidator{{ perun_apache_consolidator_html_suffix }}.html [L]
   RewriteRule ^/(.*)-ic/ic/(.+)$ /var/www/perun-wui/$2 [L]
 
   #must be last
@@ -159,10 +176,12 @@ ShibCompatValidUser on
   ####################################
   ##     PROFILE                  ####
   ####################################
+  RewriteRule ^/profile[/]?$ https://%{HTTP_HOST}/{{ perun_apache_profile_default_auth }}/profile/ [L,R=301]
   RewriteRule ^/(.*)/profile$ https://%{HTTP_HOST}/$1/profile/ [L,R=301]
-  RewriteRule ^/(.*)/profile/$ /var/www/perun-wui/PerunProfile.html [L]
+  RewriteRule ^/(.*)/profile/$ /var/www/perun-wui/PerunProfile{{ perun_apache_profile_html_suffix }}.html [L]
   RewriteRule ^/(.*)/profile/(.+)$ /var/www/perun-wui/$2 [L]
 
+{% if perun_apache_wui_enabled %}
   ####################################
   ##     WUI                      ####
   ####################################
@@ -170,20 +189,25 @@ ShibCompatValidUser on
   RewriteRule ^/(.*)/wui/$ /var/www/perun-wui/PerunAdmin.html [L]
   RewriteRule ^/(.*)/wui/(.+)$ /var/www/perun-wui/$2 [L]
 
+{% endif %}
+{% if perun_apache_affiliation_enabled %}
   ####################################
   ##     AFFILIATION              ####
   ####################################
-  #RewriteRule ^/(.*)/affiliation$ https://%{HTTP_HOST}/$1/affiliation/ [L,R=301]
-  #RewriteRule ^/(.*)/affiliation/$ /var/www/perun-wui/PerunSetAffiliation.html [L]
-  #RewriteRule ^/(.*)/affiliation/(.+)$ /var/www/perun-wui/$2 [L]
+  RewriteRule ^/(.*)/affiliation$ https://%{HTTP_HOST}/$1/affiliation/ [L,R=301]
+  RewriteRule ^/(.*)/affiliation/$ /var/www/perun-wui/PerunSetAffiliation.html [L]
+  RewriteRule ^/(.*)/affiliation/(.+)$ /var/www/perun-wui/$2 [L]
 
+{% endif %}
+{% if perun_apache_publications_enabled %}
   ####################################
   ##     PUBLICATIONS             ####
   ####################################
-  #RewriteRule ^/(.*)/publications$ https://%{HTTP_HOST}/$1/publications/ [L,R=301]
-  #RewriteRule ^/(.*)/publications/$ /var/www/perun-wui/PerunCabinet.html [L]
-  #RewriteRule ^/(.*)/publications/(.+)$ /var/www/perun-wui/$2 [L]
+  RewriteRule ^/(.*)/publications$ https://%{HTTP_HOST}/$1/publications/ [L,R=301]
+  RewriteRule ^/(.*)/publications/$ /var/www/perun-wui/PerunCabinet.html [L]
+  RewriteRule ^/(.*)/publications/(.+)$ /var/www/perun-wui/$2 [L]
 
+{% endif %}
   ####################################
   ##     AuthN Methods            ####
   ####################################
@@ -216,35 +240,28 @@ ShibCompatValidUser on
 
 {% if perun_apache_fed_enabled %}
   # authentication with SAML/Shibboleth
-  <LocationMatch "^/fed/">
-    AuthType shibboleth
-    ShibRequestSetting applicationId default
-    ShibRequestSetting requireSession 1
-    Require shib-session
-  </LocationMatch>
-  <LocationMatch "^/fed-ic/">
-    AuthType shibboleth
-    ShibRequestSetting applicationId consolidator
-    ShibRequestSetting requireSession 1
-    ShibRequestSetting forceAuthn On
-    Require shib-session
-  </LocationMatch>
 {% for item in perun_apache_fed_initiators %}
-  <LocationMatch "^/{{ item }}/">
+  <LocationMatch "^/{{ item.url }}/">
     AuthType shibboleth
-    ShibRequestSetting applicationId default
+    ShibRequestSetting applicationId {{ item.applicationId }}
     ShibRequestSetting requireSession 1
-    ShibRequestSetting requireSessionWith {{  item }}
+{% if item.id is defined %}
+    ShibRequestSetting requireSessionWith {{  item.id }}
+{% endif %}
     Require shib-session
-    </LocationMatch>
-    <LocationMatch "^/{{ item }}-ic/">
+  </LocationMatch>
+
+  <LocationMatch "^/{{ item.url }}-ic/">
     AuthType shibboleth
     ShibRequestSetting applicationId consolidator
     ShibRequestSetting requireSession 1
-    ShibRequestSetting requireSessionWith {{  item }}
+{% if item.id is defined %}
+    ShibRequestSetting requireSessionWith {{  item.id }}
+{% endif %}
     ShibRequestSetting forceAuthn On
     Require shib-session
   </LocationMatch>
+
 {% endfor %}
 {% endif %}
 

@@ -119,6 +119,17 @@
     group: root
     mode: 0444
 
+- name: "create additional files for Shibboleth"
+  copy:
+    src: "{{ item }}"
+    dest: /etc/perun/apache/shibboleth/
+    owner: root
+    group: root
+    mode: 0444
+  with_fileglob:
+    - "{{ perun_instance_hostname }}/shibboleth/*"
+  notify: "restart perun_apache"
+
 - name: "create Perun Apache container"
   docker_container:
     name: perun_apache

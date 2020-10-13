@@ -1,10 +1,10 @@
 {{ ansible_managed | comment }}
 
 # Perun administrators
-perun.admins = perun, perunTests, perunDispatcher, perunController, perunEngine, perunRegistrar, perunCabinet, perunLdapc, perunLdapInitializer
+perun.admins = {{ perun_rpc_admins|join(', ') }}
 
 # Principals for the Engines
-perun.engine.principals = perunEngine, perun-engine
+perun.engine.principals = {{ perun_rpc_engine_principals|join(', ') }}
 
 # Principals for the Registrar
 perun.registrar.principals =
@@ -16,7 +16,7 @@ perun.notification.principals = perunNotifications
 perun.rpc.principal = perunRpc
 
 # Do not lookup users for these logins
-perun.dont.lookup.users=perunTests, perunDispatcher, perunController, perunEngine, perunRegistrar, perunCabinet, perunLdapc, perun-engine, perunNotifications, perunRpc, perunSynchronizer, perunLdapInitializer
+perun.dont.lookup.users={{ perun_rpc_dont_lookup_users|join(', ') }}
 
 # DB type (oracle/postgresql)
 perun.db.type = postgresql
@@ -43,14 +43,16 @@ perun.rt.serviceuser.username = {{ perun_rpc_rt_serviceuser_username }}
 # Perun service user for RT tickets
 perun.rt.serviceuser.password = {{ perun_rpc_rt_serviceuser_password }}
 
+{% if perun_rpc_rt_sendToMail is defined and perun_rpc_rt_sendToMail %}
 # all RT tickets will be sent to this address as mails (we won't call RT API)
 perun.rt.sendToMail = {{ perun_rpc_rt_sendToMail }}
+{% endif %}
 
 # Program which ensures password changes
-perun.passwordManager.program = /bin/true
+perun.passwordManager.program = {{ perun_rpc_passwordManager_program }}
 
 # Program which ensures alternative password creation
-perun.alternativePasswordManager.program =
+perun.alternativePasswordManager.program = {{ perun_rpc_alternativePasswordManager_program }}
 
 # Peruns reCaptcha private key
 perun.recaptcha.privatekey = {{ perun_rpc_recaptcha_privatekey }}
