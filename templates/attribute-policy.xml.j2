@@ -25,7 +25,7 @@
         <Rule xsi:type="NOT">
             <Rule xsi:type="ValueRegex" regex="@"/>
         </Rule>
-        <Rule xsi:type="ScopeMatchesShibMDScope"/>
+        <!-- <Rule xsi:type="ScopeMatchesShibMDScope"/> -->
     </PermitValueRule>
 
     <AttributeFilterPolicy>
@@ -36,7 +36,7 @@
         <AttributeRule attributeID="affiliation">
             <PermitValueRule xsi:type="AND">
                 <RuleReference ref="eduPersonAffiliationValues"/>
-                <!-- <RuleReference ref="ScopingRules"/> -->
+                <RuleReference ref="ScopingRules"/>
             </PermitValueRule>
         </AttributeRule>
         <AttributeRule attributeID="unscoped-affiliation">
@@ -54,9 +54,9 @@
             <PermitValueRuleReference ref="ScopingRules"/>
         </AttributeRule>
 
-        <!-- <AttributeRule attributeID="eppn">
+        <AttributeRule attributeID="eppn">
             <PermitValueRuleReference ref="ScopingRules"/>
-        </AttributeRule> -->
+        </AttributeRule>
 
         <AttributeRule attributeID="targeted-id">
             <PermitValueRuleReference ref="ScopingRules"/>
@@ -68,9 +68,11 @@
         </AttributeRule>
 
         <!-- Enforce that the values of schacHomeOrganization are a valid Scope. -->
+        <!--
         <AttributeRule attributeID="schacHomeOrganization">
             <PermitValueRule xsi:type="ValueMatchesShibMDScope" />
         </AttributeRule>
+        -->
 
         <!-- Catch-all that passes everything else through unmolested. -->
         <AttributeRule attributeID="*" permitAny="true"/>

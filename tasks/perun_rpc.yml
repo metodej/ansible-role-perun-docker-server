@@ -86,6 +86,16 @@
       - "perun-extSources.xml"
   notify: "restart perun_rpc"
 
+- name: "create perun module"
+  copy:
+    src: "{{ perun_instance_hostname }}/{{ item }}"
+    dest: "/etc/perun/rpc/"
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+  loop: "{{ perun_rpc_module_files }}"
+  notify: "restart perun_rpc"
+
 # used for logs from group synchronizations
 - name: Make /var/log/perun/groupsync" directory
   file:

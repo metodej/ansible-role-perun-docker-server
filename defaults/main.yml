@@ -74,6 +74,7 @@ perun_rpc_attributesToSearchUsersAndMembersBy:
   - urn:perun:member:attribute-def:def:mail
   - urn:perun:ues:attribute-def:def:eppn
   - urn:perun:ues:attribute-def:def:epuid
+perun_rpc_module_files: []
 
 # old GUI
 perun_oldgui_defaultRtQueue: "perun"
@@ -201,6 +202,8 @@ perun_apache_shibboleth_sp_application_overrides: |
   <!-- no overrides -->
 perun_apache_shibboleth_sp_attribute_map_additions: |
   <!-- no additional attributes -->
+perun_apache_shibboleth_scoped_eppn: yes
+perun_apache_shibboleth_remap_additionalIdentifiers: no
 
 # Yubikey server id and key, get a new pair for each machine at https://upgrade.yubico.com/getapikey/
 perun_yubikey_id: "48695"
