@@ -102,7 +102,7 @@
     name: perun_ldapc
     image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_ldapc:{{ perun_ldapc_container_version }}"
     pull: yes
-    #    restart_policy: always
+    restart_policy: unless-stopped
     mounts:
       - { type: volume, source: perun_logs, target: /var/log/perun }
       - { type: volume, source: perunldc_home, target: /home/perun }

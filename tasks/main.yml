@@ -23,6 +23,10 @@
   import_tasks: os_setup.yml
   tags: os_setup
 
+- name: "SMTP setup"
+  import_tasks: smtp_setup.yml
+  tags: smtp_setup
+
 - name: "Postgres server setup"
   import_tasks: postgres.yml
   tags: postgresql

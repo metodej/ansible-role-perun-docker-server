@@ -4,7 +4,7 @@
     dest: /etc/perun/rpc/jdbc.properties
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
   notify: "restart perun_rpc"
 
 - name: "create perun-roles.yml"
@@ -13,7 +13,7 @@
     dest: /etc/perun/rpc/perun-roles.yml
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
 
 - name: "create perun-web-gui.properties (contains several variables)"
   template:
@@ -21,7 +21,7 @@
     dest: /etc/perun/rpc/perun-web-gui.properties
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
   notify: "restart perun_rpc"
 
 - name: "create perun.properties (contains several variables)"
@@ -30,7 +30,7 @@
     dest: /etc/perun/rpc/perun.properties
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
   notify: "restart perun_rpc"
 
 - name: "create logback.xml"
@@ -39,7 +39,7 @@
     dest: /etc/perun/rpc/logback.xml
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
 
 - name: "create perun-cabinet.properties"
   template:
@@ -47,7 +47,7 @@
     dest: /etc/perun/rpc/perun-cabinet.properties
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
 
 - name: "create perun-registrar-lib.properties"
   template:
@@ -55,7 +55,7 @@
     dest: /etc/perun/rpc/perun-registrar-lib.properties
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
 
 - name: "create perun-dispatcher.properties"
   template:
@@ -63,7 +63,7 @@
     dest: /etc/perun/rpc/perun-dispatcher.properties
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
 
 - name: "create perun-notification.properties"
   template:
@@ -71,7 +71,7 @@
     dest: /etc/perun/rpc/perun-notification.properties
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
 
 - name: "create perun-extSources.xml"
   copy:
@@ -79,20 +79,28 @@
     dest: "/etc/perun/rpc/perun-extSources.xml"
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0440'
   vars:
     findme:
       - "{{ perun_instance_hostname }}/perun-extSources.xml"
       - "perun-extSources.xml"
   notify: "restart perun_rpc"
 
-- name: "create perun module"
-  copy:
-    src: "{{ perun_instance_hostname }}/{{ item }}"
-    dest: "/etc/perun/rpc/"
+- name: "create directory /etc/perun/rpc/modules/"
+  file:
+    path: /etc/perun/rpc/modules
+    state: directory
     owner: perunrpc
     group: perunrpc
-    mode: 0440
+    mode: '0755'
+
+- name: "create perun modules"
+  copy:
+    src: "{{ perun_instance_hostname }}/{{ item }}"
+    dest: "/etc/perun/rpc/modules/"
+    owner: perunrpc
+    group: perunrpc
+    mode: '0440'
   loop: "{{ perun_rpc_module_files }}"
   notify: "restart perun_rpc"
 
@@ -110,7 +118,7 @@
     name: perun_rpc
     image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_rpc:{{ perun_rpc_container_version }}"
     pull: yes
-    #    restart_policy: always
+    restart_policy: unless-stopped
     mounts:
       - { type: volume, source: perun_logs, target: /var/log/perun }
       - { type: volume, source: perunrpc_home, target: /home/perun }

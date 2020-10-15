@@ -227,6 +227,9 @@ perun_postgresql_settings:
   max_connections: 200
   max_pred_locks_per_transaction: 128
 
+# sendmail directives to be added to sendmail.mc
+perun_sendmail_config: ""
+
 ######################
 # You do not need to modify value below
 ######################
@@ -241,8 +244,9 @@ perun_certificate_fullchain_file: "{{ perun_certs_dir }}/hostfullchain.pem"
 
 # firewall settings
 perun_firewall_open_tcp_ports:
-  - { port: 80, comment: "accept http" }
-  - { port: 443, comment: "accept https" }
+  - { port: 25, ipv4: "192.168.0.0/24", comment: "accept SMTP from docker subnet" }
+  - { port: 80, comment: "accept http from everywhere" }
+  - { port: 443, comment: "accept https from everywhere" }
   - { port: 389, ipv4: "192.168.0.0/24", comment: "accept non-encrypted ldap from docker subnet"}
   - { port: 636, comment: "accept encrypted ldaps from everywhere" }
   - { port: 5432, ipv4: "192.168.0.0/24", comment: "accept postgres from docker subnet" }

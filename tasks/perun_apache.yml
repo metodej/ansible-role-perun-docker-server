@@ -135,7 +135,7 @@
     name: perun_apache
     image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_apache:{{ perun_apache_container_version }}"
     pull: yes
-    #    restart_policy: always
+    restart_policy: unless-stopped
     mounts:
       - { type: volume, source: apache_logs, target: /var/log/apache2 }
       - { type: bind, source: /etc/perun/ssl, target: /etc/perun/ssl, read_only: yes }

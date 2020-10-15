@@ -116,9 +116,9 @@ perun.oidc.o{{ loop.index }}.extsource.name={{ issuer.extsource_name }}
 perun.oidc.o{{ loop.index }}.extsource.type={{ issuer.extsource_type }}
 {% endfor %}
 
-# Shared SMTP configuration, following values are default, uncomment to change them.
-#mail.smtp.host=localhost
-#mail.smtp.port=25
+# SMTP configuration
+mail.smtp.host=192.168.0.1
+mail.smtp.port=25
 #mail.smtp.auth=false
 #mail.smtp.starttls.enable=false
 #mail.debug=false

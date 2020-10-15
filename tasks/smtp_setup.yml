@@ -1,0 +1,56 @@
+# os_setup.yml called cesnet.unattended_upgrades that installed sendmail already
+
+- name: "make sendmail to receive SMTP from docker containers"
+  lineinfile:
+    path: /etc/mail/sendmail.mc
+    regexp: 'DAEMON_OPTIONS\(\`Family=inet,  Name=MTA-v4, Port=smtp,'
+    line:   "DAEMON_OPTIONS(`Family=inet,  Name=MTA-v4, Port=smtp, Addr=0.0.0.0')dnl"
+  register: smtp_ip_address
+
+- name: "add lines to sendmail.mc (usually to set SMTP relay)"
+  blockinfile:
+    dest: /etc/mail/sendmail.mc
+    marker: 'dnl # {mark} ANSIBLE MANAGED BLOCK'
+    block: "{{ perun_sendmail_config }}"
+  register: smtp_relay
+
+- name: "allow relaying from docker subnet"
+  blockinfile:
+    dest: /etc/mail/access
+    marker: '# {mark} ANSIBLE MANAGED BLOCK'
+    block: |
+      Connect:192.168 RELAY
+  register: smtp_subnet
+
+- name: "rebuild sendmail files"
+  when: smtp_ip_address.changed or smtp_relay.changed or smtp_subnet.changed
+  command:
+    chdir: /etc/mail
+    cmd: "make"
+  register: sendmail_reloaded
+
+- name: "set hostname"
+  hostname:
+    name: "{{ perun_rpc_hostname }}"
+
+- name: "set /etc/hostname"
+  copy:
+    dest: /etc/hostname
+    content: "{{ perun_rpc_hostname }}"
+
+- name: "create DNS names for containers in /etc/hosts"
+  blockinfile:
+    dest: /etc/hosts
+    marker: '# {mark} ANSIBLE MANAGED BLOCK'
+    block: |
+      192.168.0.1 perun_net1
+      192.168.0.2 perun_net2
+      192.168.0.3 perun_net3
+      192.168.0.4 perun_net4
+      192.168.0.5 perun_net5
+
+- name: "reload sendmail service"
+  when: sendmail_reloaded.changed
+  service:
+    name: sendmail
+    state: restarted

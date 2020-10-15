@@ -61,7 +61,7 @@
     name: perun_engine
     image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_engine:{{ perun_engine_container_version }}"
     pull: yes
-    #    restart_policy: always
+    restart_policy: unless-stopped
     mounts:
       - { type: volume, source: perun_logs, target: /var/log/perun }
       - { type: volume, source: peruneng_home, target: /home/perun }
