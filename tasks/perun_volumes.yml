@@ -33,3 +33,11 @@
     src: "{{ volume_apache_logs.volume.Mountpoint }}"
     path: /var/log/apache2
     force: yes
+
+- name: "make docker volumes accessible"
+  file:
+    path: /var/lib/docker/volumes
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
