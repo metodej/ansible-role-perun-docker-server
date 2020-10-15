@@ -1,0 +1,26 @@
+How to
+======
+
+- manage containers
+
+Use Portainer at https://{{ perun_rpc_hostname }}:9000/ or use command line.
+Container names are: perun_rpc, perun_engine, perun_ldapc, perun_apache.
+
+- list all containers
+
+docker ps -a
+
+- stop a container, restart a stopped container, restart a running container
+
+docker stop <container>
+docker start <container>
+docker restart <container>
+
+- start a root shell in a container
+
+docker exec -u root -it <container> bash
+
+- list all processes in a container
+
+docker top <container>
+
