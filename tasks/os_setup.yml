@@ -59,9 +59,17 @@
     comment: "{{ item.comment }}"
     shell: /bin/bash
     system: yes
-    create_home: no
+    create_home: "{{ item.home }}"
   loop:
-    - { name: perun, uid: 960, comment: "Perun" }
-    - { name: perunrpc, uid: 961, comment: "Perun RPC" }
-    - { name: peruneng, uid: 962, comment: "Perun Engine" }
-    - { name: perunldc, uid: 963, comment: "Perun LDAP Connector" }
+    - { name: perun, uid: 960, comment: "Perun", home: yes }
+    - { name: perunrpc, uid: 961, comment: "Perun RPC", home: no }
+    - { name: peruneng, uid: 962, comment: "Perun Engine", home: no }
+    - { name: perunldc, uid: 963, comment: "Perun LDAP Connector", home: no }
+
+- name: "create /home/perun/Perun_README.txt"
+  template:
+    src: Perun_README.txt.j2
+    dest: /home/perun/Perun_README.txt
+    owner: perun
+    group: perun
+    mode: '0544'
