@@ -71,3 +71,8 @@
       - name: perun_net
   register: perun_engine_container
 
+- name: "put container IP into /etc/hosts"
+  lineinfile:
+    dest: /etc/hosts
+    regexp: 'perun_engine'
+    line: "{{ perun_engine_container.container.NetworkSettings.Networks.perun_net.IPAddress }} perun_engine"

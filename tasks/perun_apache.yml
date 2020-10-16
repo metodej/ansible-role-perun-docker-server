@@ -147,3 +147,9 @@
       - 80:80
       - 443:443
   register: perun_apache_container
+
+- name: "put container IP into /etc/hosts"
+  lineinfile:
+    dest: /etc/hosts
+    regexp: 'perun_apache'
+    line: "{{ perun_apache_container.container.NetworkSettings.Networks.perun_net.IPAddress }} perun_apache"

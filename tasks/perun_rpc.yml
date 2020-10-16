@@ -128,4 +128,8 @@
       - name: perun_net
   register: perun_rpc_container
 
-
+- name: "put container IP into /etc/hosts"
+  lineinfile:
+    dest: /etc/hosts
+    regexp: 'perun_rpc'
+    line: "{{ perun_rpc_container.container.NetworkSettings.Networks.perun_net.IPAddress }} perun_rpc"

@@ -111,3 +111,9 @@
     networks:
       - name: perun_net
   register: perun_ldapc_container
+
+- name: "put container IP into /etc/hosts"
+  lineinfile:
+    dest: /etc/hosts
+    regexp: 'perun_ldapc'
+    line: "{{ perun_ldapc_container.container.NetworkSettings.Networks.perun_net.IPAddress }} perun_ldapc"

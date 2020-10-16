@@ -38,17 +38,6 @@
     dest: /etc/hostname
     content: "{{ perun_rpc_hostname }}"
 
-- name: "create DNS names for containers in /etc/hosts"
-  blockinfile:
-    dest: /etc/hosts
-    marker: '# {mark} ANSIBLE MANAGED BLOCK'
-    block: |
-      192.168.0.1 perun_net1
-      192.168.0.2 perun_net2
-      192.168.0.3 perun_net3
-      192.168.0.4 perun_net4
-      192.168.0.5 perun_net5
-
 - name: "reload sendmail service"
   when: sendmail_reloaded.changed
   service:
