@@ -56,7 +56,7 @@
             <LogoutInitiator type="Admin" Location="/Logout/Admin" acl="127.0.0.1 ::1" />
           
             <!-- Extension service that generates "approximate" metadata based on SP configuration. -->
-            <Handler type="MetadataGenerator" Location="/Metadata" signing="false" template="metadata_template.xml"/>
+            <Handler type="MetadataGenerator" Location="/Metadata" signing="false" template="/etc/perun/apache/shibboleth/metadata_template.xml"/>
 
             <!-- Status reporting service. -->
             <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
