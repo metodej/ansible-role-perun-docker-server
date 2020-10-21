@@ -96,12 +96,13 @@
 
 - name: "create perun modules"
   copy:
-    src: "{{ perun_instance_hostname }}/{{ item }}"
+    src: "{{ item }}"
     dest: "/etc/perun/rpc/modules/"
     owner: perunrpc
     group: perunrpc
     mode: '0440'
-  loop: "{{ perun_rpc_module_files }}"
+  with_fileglob:
+    - "files/{{ perun_instance_hostname }}/modules/*"
   notify: "restart perun_rpc"
 
 # used for logs from group synchronizations

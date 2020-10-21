@@ -74,7 +74,6 @@ perun_rpc_attributesToSearchUsersAndMembersBy:
   - urn:perun:member:attribute-def:def:mail
   - urn:perun:ues:attribute-def:def:eppn
   - urn:perun:ues:attribute-def:def:epuid
-perun_rpc_module_files: []
 
 # old GUI
 perun_oldgui_defaultRtQueue: "perun"
