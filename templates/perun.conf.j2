@@ -109,10 +109,17 @@ ShibCompatValidUser on
   ####################################
   ##     Default GUI              ####
   ####################################
-  RewriteCond %{REQUEST_URI} ^[/]?$ [OR]
-  RewriteCond %{REQUEST_URI} ^/gui[/]?$
+  RewriteCond %{REQUEST_URI} ^[/]?$
   RewriteCond %{HTTPS} on
   RewriteRule ^(.*)$ https://%{HTTP_HOST}/fed/gui/ [L]
+{% endif %}
+{% if perun_apache_default_profile_enabled %}
+  ####################################
+  ##     Default Profile          ####
+  ####################################
+  RewriteCond %{REQUEST_URI} ^[/]?$
+  RewriteCond %{HTTPS} on
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/{{ perun_apache_profile_default_auth }}/profile/ [L]
 {% endif %}
 
   ####################################
@@ -126,6 +133,7 @@ ShibCompatValidUser on
   ####################################
   ##     GUI                      ####
   ####################################
+  RewriteRule ^/gui[/]?$ https://%{HTTP_HOST}/fed/gui/ [L,R=301]
   RewriteRule ^/(.*)/gui$ https://%{HTTP_HOST}/$1/gui/ [L,R=301]
   RewriteRule ^/(.*)/gui/$ /var/www/perun-web-gui/PerunWeb.html [L]
   RewriteRule ^/(.*)/gui/(.+)$ /var/www/perun-web-gui/$2 [L]
@@ -144,7 +152,7 @@ ShibCompatValidUser on
   ##     Password Reset           ####
   ####################################
   RewriteRule ^/(.*)/pwd-reset$ https://%{HTTP_HOST}/$1/pwd-reset/ [L,R=301]
-  RewriteRule ^/(.*)/pwd-reset/$ /var/www/perun-wui/PerunPwdReset.html [L]
+  RewriteRule ^/(.*)/pwd-reset/$ /var/www/perun-wui/PerunPwdReset{{ perun_apache_pwdreset_html_suffix }}.html [L]
   RewriteRule ^/(.*)/pwd-reset/(.+)$ /var/www/perun-wui/$2 [L]
 
   ####################################
