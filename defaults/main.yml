@@ -243,6 +243,8 @@ perun_certificate_chain_file: "{{ perun_certs_dir }}/hostchain.pem"
 perun_certificate_fullchain_file: "{{ perun_certs_dir }}/hostfullchain.pem"
 
 # firewall settings
+# CESNET VPN info https://wiki.cesnet.cz/doku.php?id=interni_sluzby:openvpn
+# MUNI VPN info https://it.muni.cz/sluzby/vpn/dalsi-informace/casto-kladene-otazky#rozsah-ip
 perun_firewall_open_tcp_ports:
   - { port: 25, ipv4: "192.168.0.0/24", comment: "accept SMTP from docker subnet" }
   - { port: 80, comment: "accept http from everywhere" }
@@ -250,7 +252,8 @@ perun_firewall_open_tcp_ports:
   - { port: 389, ipv4: "192.168.0.0/24", comment: "accept non-encrypted ldap from docker subnet"}
   - { port: 636, comment: "accept encrypted ldaps from everywhere" }
   - { port: 5432, ipv4: "192.168.0.0/24", comment: "accept postgres from docker subnet" }
-  - { port: 5432, ipv6: "2001:718::/32", comment: "accept postgres from CESNET" }
+  - { port: 5432, ipv6: "2001:718::/32", comment: "accept postgres from all CESNET networks" }
+  - { port: 5432, ipv4: "195.113.222.0/24", comment: "accept postgres from CESNET VPN" }
   - { port: 5432, ipv4: "147.251.0.0/16", comment: "accept postgres from MUNI" }
 
 # debian repos to use for automatic updates
