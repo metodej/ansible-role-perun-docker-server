@@ -134,6 +134,8 @@ perun_engine_ssh_pubkey_file: id_ed25519.pub
 # Apache #
 ##########
 
+# whether to set maintenance mode
+perun_apache_in_maintenance: no
 # whether to enable redirect from / to /fed/gui/
 perun_apache_default_gui_enabled: yes
 # passwords for basic authentication, expected to be redefined in an encrypted vault

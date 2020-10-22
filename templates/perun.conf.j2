@@ -90,16 +90,20 @@ ShibCompatValidUser on
   RewriteRule  .*              -    [R=400,L]
 
 {{ perun_apache_special_config1 }}
+
+{% if perun_apache_in_maintenance %}
   ####################################
   ##      MAINTENANCE             ####
   ####################################
-  #RewriteCond %{REQUEST_URI} !^/.*/rpc/
-  #RewriteCond %{REQUEST_URI} !^/cert/.*
-  #RewriteCond %{REQUEST_URI} !^/krb/.*
-  #RewriteCond %{REQUEST_URI} !^/fed/.*
-  #RewriteCond %{REQUEST_URI} !^/maintenance/maintenance.html
-  #RewriteCond %{REQUEST_URI} !^/Shibboleth.sso/
-  #RewriteRule .* /maintenance/maintenance.html [R,L]
+  # RewriteCond %{REQUEST_URI} !^/.*/rpc/
+  # RewriteCond %{REQUEST_URI} !^/cert/.*
+  # RewriteCond %{REQUEST_URI} !^/krb/.*
+  # RewriteCond %{REQUEST_URI} !^/fed/.*
+  RewriteCond %{REQUEST_URI} !^/ba/.*
+  RewriteCond %{REQUEST_URI} !^/maintenance/maintenance.html
+  RewriteCond %{REQUEST_URI} !^/Shibboleth.sso/
+  RewriteRule .* /maintenance/maintenance.html [R,L]
+{% endif %}
 
 {% if perun_apache_default_gui_enabled %}
   ####################################
