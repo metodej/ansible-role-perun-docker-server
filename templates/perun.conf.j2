@@ -105,17 +105,13 @@ ShibCompatValidUser on
   ####################################
   ##     Default GUI              ####
   ####################################
-  RewriteCond %{REQUEST_URI} ^[/]?$
-  RewriteCond %{HTTPS} on
-  RewriteRule ^(.*)$ https://%{HTTP_HOST}/fed/gui/ [L]
+  RewriteRule ^[/]?$ https://%{HTTP_HOST}/fed/gui/ [L]
 {% endif %}
 {% if perun_apache_default_profile_enabled %}
   ####################################
   ##     Default Profile          ####
   ####################################
-  RewriteCond %{REQUEST_URI} ^[/]?$
-  RewriteCond %{HTTPS} on
-  RewriteRule ^(.*)$ https://%{HTTP_HOST}/{{ perun_apache_profile_default_auth }}/profile/ [L]
+  RewriteRule ^[/]?$ https://%{HTTP_HOST}/{{ perun_apache_profile_default_auth }}/profile/ [L]
 {% endif %}
 
   ####################################
