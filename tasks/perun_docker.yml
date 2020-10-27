@@ -66,6 +66,18 @@
     group: perun
     mode: '0640'
 
+- name: "list normal portainer volumes"
+  set_fact:
+    portainer_mounts:
+      - { type: bind, source: /var/run/docker.sock, target: /var/run/docker.sock }
+      - { type: volume, source: portainer_data, target: /data }
+      - { type: bind, source: "{{ perun_certs_dir }}", target: "{{ perun_certs_dir }}", read_only: yes }
+
+- name: "add certbot dirs to portainer volumes"
+  when: perun_use_certbot_certificates
+  set_fact:
+    portainer_mounts: "{{ portainer_mounts + perun_certbot_mounts }}"
+
 - name: "install portainer container"
   docker_container:
     name: portainer
@@ -75,10 +87,7 @@
     command: "-H unix:///var/run/docker.sock --ssl --sslcert {{ perun_certificate_fullchain_file }} --sslkey {{ perun_certificate_key_file }} --admin-password-file {{ perun_certs_dir }}/portainer_admin_password.txt"
     ports:
       - 9000:9000
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-      - "{{ perun_certs_dir }}:{{ perun_certs_dir }}:ro"
+    mounts: "{{ portainer_mounts }}"
   register: portainer_container
 
 - name: "login into gitlab docker registry"

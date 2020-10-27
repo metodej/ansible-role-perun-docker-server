@@ -105,19 +105,27 @@
 
 - name: "create sp-key.pem"
   copy:
-    src: "{{ perun_instance_hostname }}/sp-key.pem"
+    src: "{{ lookup('first_found', findme) }}"
     dest: /etc/perun/apache/shibboleth/sp-key.pem
     owner: root
     group: root
     mode: 0444
+  vars:
+    findme:
+      - "{{ perun_instance_hostname }}/sp-key.pem"
+      - "sp-key.pem"
 
 - name: "create sp-cert.pem"
   copy:
-    src: "{{ perun_instance_hostname }}/sp-cert.pem"
+    src: "{{ lookup('first_found', findme) }}"
     dest: /etc/perun/apache/shibboleth/sp-cert.pem
     owner: root
     group: root
     mode: 0444
+  vars:
+    findme:
+      - "{{ perun_instance_hostname }}/sp-cert.pem"
+      - "sp-cert.pem"
 
 - name: "create additional files for Shibboleth"
   copy:
@@ -130,16 +138,25 @@
     - "{{ perun_instance_hostname }}/shibboleth/*"
   notify: "restart perun_apache"
 
+- name: "list normal apache mounts"
+  set_fact:
+    apache_mounts:
+      - { type: volume, source: apache_logs, target: /var/log/apache2 }
+      - { type: bind, source: /etc/perun/ssl, target: /etc/perun/ssl, read_only: yes }
+      - { type: bind, source: /etc/perun/apache, target: /etc/perun/apache, read_only: yes }
+
+- name: "add certbot dirs to apache mounts"
+  when: perun_use_certbot_certificates
+  set_fact:
+    apache_mounts: "{{ apache_mounts + perun_certbot_mounts }}"
+
 - name: "create Perun Apache container"
   docker_container:
     name: perun_apache
     image: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_apache:{{ perun_apache_container_version }}"
     pull: yes
     restart_policy: unless-stopped
-    mounts:
-      - { type: volume, source: apache_logs, target: /var/log/apache2 }
-      - { type: bind, source: /etc/perun/ssl, target: /etc/perun/ssl, read_only: yes }
-      - { type: bind, source: /etc/perun/apache, target: /etc/perun/apache, read_only: yes }
+    mounts: "{{ apache_mounts }}"
     networks_cli_compatible: yes
     networks:
       - name: perun_net
