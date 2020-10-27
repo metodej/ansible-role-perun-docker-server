@@ -250,5 +250,10 @@
       - userCertificateSubject eq
       - entityID eq
       - assignedToResourceId eq
+      - userIdentities eq
     state: present
   notify: "restart ldap"
+
+- name: "get OS service facts"
+  when: ansible_facts.services['slapd'] is not defined
+  service_facts:
