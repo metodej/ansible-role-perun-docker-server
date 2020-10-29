@@ -39,7 +39,6 @@
   import_tasks: perun_docker.yml
   tags: perun_docker
 
-# OpenLDAP must be started after Docker creates local network for Perun
 - name: "OpenLDAP directory server setup"
   import_tasks: perun_ldap.yml
   tags: perun_ldap

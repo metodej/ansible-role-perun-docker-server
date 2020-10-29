@@ -1,11 +1,3 @@
-- name: "compute baseDN"
-  set_fact:
-    perun_ldap_basedn: '{{ "dc=" + perun_ldap_domain.split(".") | join(",dc=") }}'
-
-- name: "compute admin DN"
-  set_fact:
-    perun_ldap_data_admin_dn: '{{ "cn=admin," + perun_ldap_basedn }}'
-
 - name: "create perun-ldapc.properties"
   template:
     src: perun-ldapc.properties.j2

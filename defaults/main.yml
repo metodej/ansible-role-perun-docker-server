@@ -124,12 +124,14 @@ perun_notification_fromText: "Test message"
 
 # LDAP
 perun_ldap_domain: "example.org"
-perun_ldap_config_password: "test"
 perun_ldap_data_password: "test"
+perun_ldap_config_password: "test"
 perun_ldap_proxy_password: "test"
 perun_ldap_schemas_perun_version: "{{ perun_ldapc_container_version }}"
 perun_ldap_sasl_login_namespace: ""
+perun_ldap_master_replica: no
 
+# engine ssh key
 perun_engine_ssh_privkey_file: id_ed25519
 perun_engine_ssh_pubkey_file: id_ed25519.pub
 
@@ -297,3 +299,31 @@ perun_yubikey_users:
       - ccccccghijkl
     sshkeys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQiusTXxPGdXXzhHyU9wEb1i5PAdN/qBX8lVw90/yZo6LKBl+fO2QuRTQUxxRgk05puXYwWMF4IheoVBmWFzwClyH/Ox88Yq+WM4nGxIpzvoyUZQ0rRM7a0LfaLvDsJpkoMOr53LFfQtdTY7ZiKXsaTI1EmhHXVmfgFXDTu4IE2EBGUrKPj28+yD/5UuyybA/TfZJ6wW51M0QAaQy3n2xWY+K+aFfTJv2vQin2cIjIPMWfUoUCR2eYNbtZ/uHwXgJxK1W3PeeJhLjW8RXdfLiSOA3+8X5NCHGBs5BLdvieQjB0SYb0NqCc7scAlJV14MGlWdBYuczV2gvn2mnT4q3F
+
+perun_ldap_basedn: '{{ "dc=" + perun_ldap_domain.split(".") | join(",dc=") }}'
+perun_ldap_data_admin_dn: '{{ "cn=admin," + perun_ldap_basedn }}'
+perun_ldap_access_rules_start:
+  # value are in YAML folded style (newlines are replaced with spaces) with chomping (no newline at the end)
+  - >-
+    to attrs=userPassword
+    by self write
+    by anonymous auth
+    by * none
+  - >-
+    to attrs=shadowLastChange
+    by self write
+    by * read
+  - >-
+    to dn.subtree="{{ perun_ldap_basedn }}"
+    by dn.exact="cn=proxy,{{ perun_ldap_basedn }}" read
+    by * break
+perun_ldap_access_rules_end:
+  - >-
+    to *
+    by self read
+    by * break
+  - >-
+    to *
+    by users search
+    by * break
+perun_ldap_access_rules_additional: []
