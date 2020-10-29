@@ -141,6 +141,7 @@
 
 # SHA is used for idempotency, SSHA has different salt each time
 - name: "compute replication password hash"
+  when: perun_ldap_master_replica
   command:
     argv: [ 'slappasswd', '-h', '{SHA}', '-s', "{{ perun_ldap_replication_password }}" ]
   register: perun_ldap_replication_password_hash
@@ -148,6 +149,7 @@
   no_log: True
 
 - name: "create cn=replication,{{ perun_ldap_basedn }} user entry"
+  when: perun_ldap_master_replica
   ldap_entry:
     dn: "cn=replication,{{ perun_ldap_basedn }}"
     objectClass:
