@@ -163,19 +163,24 @@
     bind_dn: "{{ perun_ldap_data_admin_dn }}"
     bind_pw: "{{ perun_ldap_data_password }}"
 
-- name: "LDAP access rules start"
+- name: "LDAP access rules empty"
   set_fact:
-    olcAccess_values: "{{ perun_ldap_access_rules_start }}"
+    olcAccess_values: []
     oldAccess_replication:
       - >-
         to dn.subtree="{{ perun_ldap_basedn }}"
         by dn.exact="cn=replication,{{ perun_ldap_basedn }}" read
         by * break
 
-- name: "LDAP access rule for replication"
+- name: "LDAP access rule for replication must be first"
   when: perun_ldap_master_replica
   set_fact:
     olcAccess_values: "{{ olcAccess_values + oldAccess_replication }}"
+
+- name: "LDAP access rules start"
+  when: perun_ldap_master_replica
+  set_fact:
+    olcAccess_values: "{{ olcAccess_values + perun_ldap_access_rules_start }}"
 
 - name: "additional LDAP access rules"
   set_fact:
@@ -207,6 +212,13 @@
     dn: cn=config
     name: olcAttributeOptions
     values: "x-ns-"
+    state: present
+
+- name: "set CAs recognized by slapd"
+  ldap_attr:
+    dn: cn=config
+    name: olcTLSCACertificateFile
+    values: /etc/ssl/certs/ca-certificates.crt
     state: exact
 
 - name: "replication"
@@ -218,14 +230,14 @@
         name: olcLimits
         values:
           - 'dn.exact="cn=replication,{{ perun_ldap_basedn }}" time=unlimited size=unlimited'
-        state: present
+        state: exact
     - name: "modules for replica"
       ldap_attr:
         dn: cn=module{0},cn=config
         name: olcModuleLoad
         values:
-          - syncprov
-          - accesslog
+          - '{1}syncprov'
+          - '{2}accesslog'
         state: present
     - name: "directory for accesslog"
       file:
