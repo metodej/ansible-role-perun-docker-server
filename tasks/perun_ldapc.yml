@@ -51,14 +51,6 @@
     group: perunldc
     mode: 0440
 
-- name: "create perun-rpc-lib.properties"
-  template:
-    src: perun-rpc-lib.properties.j2
-    dest: /etc/perun/ldapc/perun-rpc-lib.properties
-    owner: perunldc
-    group: perunldc
-    mode: 0440
-
 - name: "create perun-ldapc-attributes.xml"
   copy:
     src: "{{ lookup('first_found', findme) }}"

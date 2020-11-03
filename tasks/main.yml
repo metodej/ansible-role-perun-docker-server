@@ -71,3 +71,9 @@
     - perun_apache
     - perun_config
 
+- name: "perun CLI setup"
+  import_tasks: perun_cli.yml
+  tags:
+    - perun_cli
+    - perun_config
+

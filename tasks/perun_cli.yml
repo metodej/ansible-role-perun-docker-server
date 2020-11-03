@@ -1,0 +1,25 @@
+
+- name: "create /etc/perun/perun-cli-env"
+  template:
+    src: perun-cli-env.j2
+    dest: /etc/perun/perun-cli-env
+    owner: perun
+    group: perun
+    mode: '0440'
+
+- name: "create /usr/local/bin/perun-cli"
+  copy:
+    dest: /usr/local/bin/perun-cli
+    owner: perun
+    group: perun
+    mode: '0550'
+    content: |
+      #!/bin/bash
+      docker run -it --rm --name perun_cli --env-file /etc/perun/perun-cli-env \
+        registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_cli_perl:{{ perun_cli_container_version }}
+
+- name: "preload image for perun_cli"
+  docker_image:
+    name: "registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_cli_perl:{{ perun_cli_container_version }}"
+    source: pull
+    state: present

@@ -8,6 +8,7 @@ perun_rpc_container_version: latest
 perun_engine_container_version: latest
 perun_apache_container_version: latest
 perun_ldapc_container_version: latest
+perun_cli_container_version: "{{ perun_rpc_container_version }}"
 
 # used only for first database initialization
 perun_rpc_git_version: "{{ perun_rpc_container_version }}"
