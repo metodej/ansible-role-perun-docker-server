@@ -72,6 +72,42 @@
     directory_mode: '0550'
     mode: '0440'
 
+- name: "create /etc/perun/engine/gen-local"
+  file:
+    path: /etc/perun/engine/gen-local
+    state: directory
+    owner: peruneng
+    group: peruneng
+    mode: '0550'
+
+- name: "copy gen-local"
+  copy:
+    src: "{{ item }}"
+    dest: /etc/perun/engine/gen-local/
+    owner: peruneng
+    group: peruneng
+    mode: '0550'
+  with_fileglob:
+    - "files/{{ perun_instance_hostname }}/gen-local/*"
+
+- name: "create /etc/perun/engine/send-local"
+  file:
+    path: /etc/perun/engine/send-local
+    state: directory
+    owner: peruneng
+    group: peruneng
+    mode: '0550'
+
+- name: "copy send-local"
+  copy:
+    src: "{{ item }}"
+    dest: /etc/perun/engine/send-local/
+    owner: peruneng
+    group: peruneng
+    mode: '0550'
+  with_fileglob:
+    - "files/{{ perun_instance_hostname }}/send-local/*"
+
 - name: "create Perun engine container"
   docker_container:
     name: perun_engine
