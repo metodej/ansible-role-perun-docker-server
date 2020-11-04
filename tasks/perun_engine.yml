@@ -56,6 +56,22 @@
       - "{{ perun_instance_hostname }}/{{ perun_engine_ssh_pubkey_file }}"
       - "{{ perun_engine_ssh_pubkey_file }}"
 
+- name: "detect local directory"
+  local_action:
+    module: stat
+    path: "files/{{ inventory_hostname }}/services"
+  register: hs
+
+- name: "recursive copy to /etc/perun/engine/services"
+  when: hs.stat.exists
+  copy:
+    src: "{{ hs.stat.path }}"
+    dest: /etc/perun/engine/
+    owner: peruneng
+    group: peruneng
+    directory_mode: '0550'
+    mode: '0440'
+
 - name: "create Perun engine container"
   docker_container:
     name: perun_engine
