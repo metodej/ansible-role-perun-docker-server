@@ -58,7 +58,8 @@
         <AttributeDecoder xsi:type="NameIDAttributeDecoder" formatter="$NameQualifier!$SPNameQualifier!$Name" defaultQualifiers="true"/>
     </Attribute>
 
-    <!-- Other eduPerson attributes (SAML 2 names followed by SAML 1 names)... -->
+    <!-- Other eduPerson attributes (SAML 2 names followed by SAML 1 names)...
+         https://incommon.org/community/mace-registries/incommon-object-identifiers/ -->
 {% if perun_apache_shibboleth_remap_assurance %}
     <!-- assurance remaped to {{ perun_apache_shibboleth_remap_assurance }} -->
     <Attribute name="urn:oid:1.3.6.1.4.1.5923.1.1.1.11" id="{{ perun_apache_shibboleth_remap_assurance }}"/>
@@ -148,7 +149,7 @@
     <Attribute name="urn:mace:dir:attribute-def:businessCategory" id="businessCategory"/>
     <Attribute name="urn:mace:dir:attribute-def:physicalDeliveryOfficeName" id="physicalDeliveryOfficeName"/>
 
-    <!-- SCHAC attributes... -->
+    <!-- SCHAC attributes https://wiki.refeds.org/display/STAN/SCHAC+OID+Registry -->
     <Attribute name="urn:oid:1.3.6.1.4.1.25178.1.2.9" id="schacHomeOrganization">
         <AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="false"/>
     </Attribute>
