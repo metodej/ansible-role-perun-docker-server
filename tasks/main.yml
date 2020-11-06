@@ -39,9 +39,16 @@
   import_tasks: perun_docker.yml
   tags: perun_docker
 
-- name: "OpenLDAP directory server setup"
-  import_tasks: perun_ldap.yml
-  tags: perun_ldap
+- name: "OpenLDAP directory server installation"
+  import_tasks: perun_ldap_install.yml
+  tags:
+    - perun_ldap
+
+- name: "OpenLDAP directory server config"
+  import_tasks: perun_ldap_config.yml
+  tags:
+    - perun_ldap
+    - perun_config
 
 - name: "setup of users and Docker data volumes for Perun containers"
   import_tasks: perun_volumes.yml
