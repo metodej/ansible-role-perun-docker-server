@@ -89,6 +89,7 @@
     mode: '0550'
   with_fileglob:
     - "files/{{ perun_instance_hostname }}/gen-local/*"
+  notify: "restart perun_engine"
 
 - name: "create /etc/perun/engine/send-local"
   file:
@@ -107,6 +108,7 @@
     mode: '0550'
   with_fileglob:
     - "files/{{ perun_instance_hostname }}/send-local/*"
+  notify: "restart perun_engine"
 
 - name: "create Perun engine container"
   docker_container:

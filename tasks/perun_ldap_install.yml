@@ -213,14 +213,6 @@
     values: "x-ns-"
     state: present
 
-# !!! this attribute is for certificate chain!
-#- name: "set CAs recognized by slapd"
-#  ldap_attr:
-#    dn: cn=config
-#    name: olcTLSCACertificateFile
-#    values: /etc/ssl/certs/ca-certificates.crt
-#    state: exact
-
 - name: "replication"
   when: perun_ldap_master_replica
   block:
@@ -229,8 +221,9 @@
         dn: olcDatabase={1}mdb,cn=config
         name: olcLimits
         values:
-          - 'dn.exact="cn=replication,{{ perun_ldap_basedn }}" time=unlimited size=unlimited'
+          - '{0}dn.exact="cn=replication,{{ perun_ldap_basedn }}" time=unlimited size=unlimited'
         state: exact
+
     - name: "modules for replica"
       ldap_attr:
         dn: cn=module{0},cn=config
