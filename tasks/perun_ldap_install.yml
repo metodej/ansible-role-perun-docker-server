@@ -125,7 +125,7 @@
   changed_when: False
   no_log: True
 
-- name: "create cn=proxy,{{ perun_ldap_basedn }} user entry"
+- name: "create proxy user entry"
   ldap_entry:
     dn: "cn=proxy,{{ perun_ldap_basedn }}"
     objectClass:
@@ -148,7 +148,7 @@
   changed_when: False
   no_log: True
 
-- name: "create cn=replication,{{ perun_ldap_basedn }} user entry"
+- name: "create replication user entry"
   when: perun_ldap_master_replica
   ldap_entry:
     dn: "cn=replication,{{ perun_ldap_basedn }}"
@@ -178,7 +178,6 @@
     olcAccess_values: "{{ olcAccess_values + oldAccess_replication }}"
 
 - name: "LDAP access rules start"
-  when: perun_ldap_master_replica
   set_fact:
     olcAccess_values: "{{ olcAccess_values + perun_ldap_access_rules_start }}"
 
@@ -214,12 +213,13 @@
     values: "x-ns-"
     state: present
 
-- name: "set CAs recognized by slapd"
-  ldap_attr:
-    dn: cn=config
-    name: olcTLSCACertificateFile
-    values: /etc/ssl/certs/ca-certificates.crt
-    state: exact
+# !!! this attribute is for certificate chain!
+#- name: "set CAs recognized by slapd"
+#  ldap_attr:
+#    dn: cn=config
+#    name: olcTLSCACertificateFile
+#    values: /etc/ssl/certs/ca-certificates.crt
+#    state: exact
 
 - name: "replication"
   when: perun_ldap_master_replica
