@@ -10,6 +10,7 @@
 - name: "add lines to sendmail.mc (usually to set SMTP relay)"
   blockinfile:
     dest: /etc/mail/sendmail.mc
+    insertbefore: '^MAILER_DEFINITIONS'
     marker: 'dnl # {mark} ANSIBLE MANAGED BLOCK'
     block: "{{ perun_sendmail_config }}"
   register: smtp_relay
