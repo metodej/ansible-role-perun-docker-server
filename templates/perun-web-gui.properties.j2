@@ -61,8 +61,14 @@ brand.logo.en={{ perun_oldgui_brand_logo_en }}
 {% if perun_oldgui_brand_logo_cs is defined %}
 brand.logo.cs={{ perun_oldgui_brand_logo_cs }}
 {% endif %}
+{% if perun_oldgui_brand_name_en is defined %}
+brand.name.en={{ perun_oldgui_brand_name_en }}
+{% endif %}
+{% if perun_oldgui_brand_name_cs is defined %}
+brand.name.cs={{ perun_oldgui_brand_name_cs }}
+{% endif %}
 
-footer.disabled=false
+footer.disabled={{ perun_oldgui_footer_disabled }}
 language.switch.disabled={{ perun_oldgui_language_switch_disabled }}
 header.disabled=false
 

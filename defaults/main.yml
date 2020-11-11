@@ -92,6 +92,7 @@ perun_oldgui_getAttributesListForUserTables:
 perun_oldgui_getSupportedPasswordNamespaces: ""
 perun_oldgui_getReCaptchaPublicKey: '6Lf0eUYUAAAAAAQuoyjZCrK9DztF4e-wF23PBPFR'
 perun_oldgui_language_switch_disabled: 'false'
+perun_oldgui_footer_disabled: 'false'
 perun_oldgui_cert_hosts:
   - "https://{{ perun_rpc_hostname }}"
 perun_oldgui_logoUrl: 'img/logo.png'
