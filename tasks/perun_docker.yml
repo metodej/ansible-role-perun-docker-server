@@ -38,12 +38,12 @@
       - pass
     state: present
 
-- name: "set MTU to 1442 to enable Docker to run on OpenStack"
+- name: "set MTU to enable Docker to run on OpenStack"
   copy:
     dest: /etc/docker/daemon.json
     content: |
       {
-       "mtu": 1442
+       "mtu": {{ ansible_default_ipv4.mtu }}
       }
   register: mtu
 
