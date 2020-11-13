@@ -274,6 +274,9 @@ perun_firewall_open_tcp_ports:
   - { port: 5432, ipv6: "2001:718::/32", comment: "accept postgres from all CESNET networks" }
   - { port: 5432, ipv4: "195.113.222.0/24", comment: "accept postgres from CESNET VPN" }
   - { port: 5432, ipv4: "147.251.0.0/16", comment: "accept postgres from MUNI" }
+  - { port: 9000, ipv6: "2001:718:801::/48", comment: "portainer only from MUNI over IPv6" }
+perun_firewall_docker_rules:
+  - { port: 9000, only: "147.251.0.0/16", comment: "portainer only from MUNI over IPv4" }
 
 # debian repos to use for automatic updates
 perun_unattended_upgrades_origin_patterns: |2
