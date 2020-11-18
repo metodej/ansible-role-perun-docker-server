@@ -41,3 +41,25 @@
     owner: root
     group: root
     mode: '0755'
+
+- name: "create directory for shibboleth logs"
+  file:
+    path: /var/log/apache2/shibboleth
+    state: directory
+    owner: _shibd
+    group: _shibd
+    mode: '0755'
+
+- name: "create link /var/log/shibboleth"
+  file:
+    state: link
+    src: /var/log/apache2/shibboleth
+    path: /var/log/shibboleth
+    force: yes
+
+- name: "set permissions for /var/log/apache2 to allow _shibd go through"
+  file:
+    path: /var/log/apache2
+    mode: '0755'
+    owner: root
+    group: adm

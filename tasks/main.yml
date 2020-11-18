@@ -50,7 +50,7 @@
     - perun_ldap
     - perun_config
 
-- name: "setup of users and Docker data volumes for Perun containers"
+- name: "setup of Docker data volumes for Perun containers"
   import_tasks: perun_volumes.yml
   tags: perun_volumes
 

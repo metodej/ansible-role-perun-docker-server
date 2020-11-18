@@ -51,6 +51,7 @@
     - { name: perunrpc, gid: 961 }
     - { name: peruneng, gid: 962 }
     - { name: perunldc, gid: 963 }
+    - { name: _shibd, gid: 964 }
 
 - name: "create perun users"
   user:
@@ -58,14 +59,15 @@
     uid: "{{ item.uid }}"
     group: "{{ item.name }}"
     comment: "{{ item.comment }}"
-    shell: /bin/bash
+    shell: "{{ item.shell }}"
     system: yes
     create_home: "{{ item.home }}"
   loop:
-    - { name: perun, uid: 960, comment: "Perun", home: yes }
-    - { name: perunrpc, uid: 961, comment: "Perun RPC", home: no }
-    - { name: peruneng, uid: 962, comment: "Perun Engine", home: no }
-    - { name: perunldc, uid: 963, comment: "Perun LDAP Connector", home: no }
+    - { name: perun,    uid: 960, comment: "Perun", home: yes, shell: /bin/bash }
+    - { name: perunrpc, uid: 961, comment: "Perun RPC", home: no, shell: /bin/bash }
+    - { name: peruneng, uid: 962, comment: "Perun Engine", home: no, shell: /bin/bash }
+    - { name: perunldc, uid: 963, comment: "Perun LDAP Connector", home: no, shell: /bin/bash }
+    - { name: _shibd,   uid: 964, comment: "Shibboleth daemon", home: no, shell: /usr/sbin/nologin }
 
 - name: "create /home/perun/Perun_README.txt"
   template:
