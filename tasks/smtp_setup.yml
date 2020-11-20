@@ -21,6 +21,9 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK'
     block: |
       Connect:192.168 RELAY
+      GreetPause:192.168 0
+      ClientRate:192.168 0
+      ClientConn:192.168 0
   register: smtp_subnet
 
 - name: "rebuild sendmail files"
