@@ -1,6 +1,7 @@
 {{ ansible_managed | comment }}
 
 perunReportEmailAddress={{ perun_email }}
+pwdreset.support.mail={{ perun_email }}
 defaultRtQueue={{ perun_oldgui_defaultRtQueue }}
 vosManagerMembersGroup=members
 getAttributesListForMemberTables={{ perun_oldgui_getAttributesListForMemberTables|join(',') }}
