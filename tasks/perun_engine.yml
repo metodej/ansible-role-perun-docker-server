@@ -59,7 +59,7 @@
 - name: "detect local directory"
   local_action:
     module: stat
-    path: "files/{{ inventory_hostname }}/services"
+    path: "files/{{ perun_instance_hostname }}/services"
   register: hs
 
 - name: "recursive copy to /etc/perun/engine/services"

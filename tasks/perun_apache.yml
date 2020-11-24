@@ -46,11 +46,17 @@
   with_fileglob:
     - "templates/maintenance/*"
 
+- name: "detect local instanceConfig.json"
+  local_action:
+    module: stat
+    path: "files/{{ perun_instance_hostname }}/admin-gui-instanceConfig.json"
+  register: ic
+
 - name: "create /etc/perun/apache/instanceConfig.json"
-  when: perun_rpc_oidc_issuers is defined and perun_rpc_oidc_issuers
-  template:
-    src: instanceConfig.json
-    dest: /etc/perun/apache/
+  when: ic.stat.exists
+  copy:
+    src: "{{ ic.stat.path}}"
+    dest: /etc/perun/apache/instanceConfig.json
 
 - name: "create /etc/perun/apache/sites-enabled/000-perun.conf"
   template:

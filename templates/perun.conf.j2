@@ -48,6 +48,7 @@ ShibCompatValidUser on
 {% if perun_apache_igtf_certs %}
   # SSL client certificates authentication
   SSLCACertificatePath /etc/grid-security/certificates/
+  SSLCADNRequestFile /etc/grid-security/accepted_cas.pem
   SSLVerifyDepth 5
   SSLVerifyClient optional
   SSLOptions +LegacyDNStringFormat

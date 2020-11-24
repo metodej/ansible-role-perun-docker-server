@@ -93,8 +93,12 @@
 - name: "login into gitlab docker registry"
   docker_login:
     registry_url: "registry.gitlab.ics.muni.cz:443"
-    username: "gitlab-read-only-deploy-token-perun-docker"
-    password: "K3tG1Np-yLVWB51jj3bB"
+# perun_docker only:
+#    username: "gitlab-read-only-deploy-token-perun-docker"
+#    password: "K3tG1Np-yLVWB51jj3bB"
+# whole perun:
+    username: "gitlab-read-only-deploy-token-perun-all"
+    password: "BgdJHJ_gsmyqp3se5WRx"
 
 - name: "create a local Docker network for Perun"
   docker_network:

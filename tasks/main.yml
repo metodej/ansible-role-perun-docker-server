@@ -84,3 +84,12 @@
     - perun_cli
     - perun_config
 
+- name: "site-specific tasks"
+  when: perun_site_specific_tasks is defined
+  include_tasks:
+    file: "files/{{ perun_instance_hostname}}/{{ perun_site_specific_tasks }}"
+    apply:
+      tags:
+        - site_specific
+  tags:
+    - site_specific
