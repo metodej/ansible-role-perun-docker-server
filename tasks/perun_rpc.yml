@@ -105,6 +105,22 @@
     - "files/{{ perun_instance_hostname }}/modules/*"
   notify: "restart perun_rpc"
 
+- name: "detect local directory perun_rpc_etc/"
+  local_action:
+    module: stat
+    path: "files/{{ perun_instance_hostname }}/perun_rpc_etc/"
+  register: rpcetc
+
+- name: "recursive copy from perun_rpc_etc/ to /etc/perun/rpc/"
+  when: rpcetc.stat.exists
+  copy:
+    src: "{{ rpcetc.stat.path }}"
+    dest: /etc/perun/rpc/
+    owner: perunrpc
+    group: perunrpc
+    directory_mode: '0550'
+    mode: '0440'
+
 # used for logs from group synchronizations
 - name: Make /var/log/perun/groupsync" directory
   file:
