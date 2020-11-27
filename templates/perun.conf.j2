@@ -270,6 +270,18 @@ ShibCompatValidUser on
 {% endfor %}
 {% endif %}
 
+{% if perun_apache_non_enabled %}
+  <LocationMatch "^/non/">
+    Options FollowSymLinks
+    Require all granted
+    SSLVerifyClient none
+
+    SetEnvIf _ .* AJP_EXTSOURCE=LOCAL
+    SetEnvIf _ .* AJP_EXTSOURCETYPE=cz.metacentrum.perun.core.impl.ExtSourceInternal
+    SetEnvIf _ .* AJP_EXTSOURCELOA=0
+  </LocationMatch>
+{% endif %}
+
 {% if perun_apache_kerberos_enabled %}
   # authentication with Kerberos
 {% for krbrealm in perun_apache_kerberos_realms %}

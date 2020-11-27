@@ -114,9 +114,11 @@ registrar.enforceProxy={{ perun_oldgui_registrar_enforceProxy }}
 # if not set, user is redirected to /fed/ for federated identities (registrar->ic)
 #registrar.customWayfsPrefixes=elixir,bbmri
 
+{% if perun_oldgui_registrar_skipSummaryFor is defined %}
 # List of Vos and groups for which we skip summary page if no error happens and we redirect outside of registrar afterwards
 # format: "vo_short_name" or "vo_short_name:group_name".
-#registrar.skipSummaryFor=
+registrar.skipSummaryFor={{ perun_oldgui_registrar_skipSummaryFor|join(', ') }}
+{% endif %}
 
 # When set to true, finding of similar users after clicking on the registration submit button will not be triggered.
 # Therefore, account linking will not be offered to users even when they already have registered some similar accounts.

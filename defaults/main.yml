@@ -52,7 +52,6 @@ perun_rpc_rt_url: ""
 perun_rpc_rt_defaultQueue: ""
 perun_rpc_rt_serviceuser_username: ""
 perun_rpc_rt_serviceuser_password: "test"
-perun_rpc_rt_sendToMail: "support@example.org"
 perun_rpc_passwordManager_program: "/bin/true"
 perun_rpc_alternativePasswordManager_program: ""
 perun_rpc_native_language: 'cs,Česky,Czech'
@@ -117,6 +116,8 @@ perun_ngui_client_id: "xxx-xxxx-xxxx-xxx-xx-xxx"
 # perun-registrar-lib.properties
 perun_registrar_secretKey: "test"
 perun_registrar_fedAuthz: 'fed'
+perun_registrar_backupFrom: "{{ perun_email }}"
+perun_registrar_backupTo: "{{ perun_email }}"
 
 # perun-cabinet.properties
 perun_cabinet_mu_login: ""
@@ -125,6 +126,7 @@ perun_cabinet_mu_password: ""
 # perun-notification.properties
 perun_notification_emailFrom: "perun@localhost"
 perun_notification_fromText: "Test message"
+perun_notification_additional_lines: ""
 
 # LDAP
 perun_ldap_domain: "example.org"
@@ -174,6 +176,7 @@ perun_apache_fed_initiators:
     applicationId: "default"
 # whether to enable authentication with X509 certificates issued by IGTF-accredites CAs
 perun_apache_igtf_certs: no
+perun_apache_non_enabled: no
 perun_apache_kerberos_enabled: no
 perun_apache_kerberos_realms:
   - name: META
