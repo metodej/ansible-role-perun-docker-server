@@ -38,7 +38,7 @@
       - pass
     state: present
 
-- name: "set MTU to enable Docker to run on OpenStack"
+- name: "set Docker's MTU to match MTU of the machine (needed on OpenStack)"
   copy:
     dest: /etc/docker/daemon.json
     content: |

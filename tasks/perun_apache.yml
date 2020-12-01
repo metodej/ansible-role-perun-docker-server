@@ -46,6 +46,19 @@
   with_fileglob:
     - "templates/maintenance/*"
 
+- name: "create dir /etc/perun/apache/img for logo and other images"
+  file:
+    state: directory
+    path: /etc/perun/apache/img
+    mode: '0755'
+
+- name: "copy logo and other images"
+  copy:
+    src: "{{ item }}"
+    dest: /etc/perun/apache/img
+  with_fileglob:
+    - "{{ perun_instance_hostname }}/img/*"
+
 - name: "detect local instanceConfig.json"
   local_action:
     module: stat
