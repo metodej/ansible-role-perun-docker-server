@@ -65,6 +65,7 @@ perun_rpc_mailchange_validationWindow: 6
 perun_rpc_pwdreset_secret_key: '123456789120123456'
 perun_rpc_pwdreset_init_vector: '0123456789ABCDEF'
 perun_rpc_pwdreset_validationWindow: 6
+perun_rpc_accountActivation_validationWindow: 72
 perun_rpc_instance_name: 'TESTPERUN'
 perun_rpc_instance_id: 'TP1'
 perun_rpc_proxy_idps: ""
