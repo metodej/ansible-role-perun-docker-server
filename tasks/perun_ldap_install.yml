@@ -213,6 +213,13 @@
     values: "x-ns-"
     state: present
 
+- name: "set unlimited size of searches"
+  ldap_attr:
+    dn: olcDatabase={-1}frontend,cn=config
+    name: olcSizeLimit
+    values: "{{ perun_ldap_size_limit }}"
+    state: exact
+
 - name: "replication"
   when: perun_ldap_master_replica
   block:

@@ -342,3 +342,4 @@ perun_ldap_access_rules_end:
     by users search
     by * break
 perun_ldap_access_rules_additional: []
+perun_ldap_size_limit: unlimited
