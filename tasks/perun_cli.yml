@@ -15,8 +15,8 @@
     mode: '0550'
     content: |
       #!/bin/bash
-      docker run -it --rm --name perun_cli --env-file /etc/perun/perun-cli-env \
-        registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_cli_perl:{{ perun_cli_container_version }}
+      docker run -it --rm --name cli_$$ --env-file /etc/perun/perun-cli-env ${PERUN_DOCKER_OPTS} \
+        registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_cli_perl:{{ perun_cli_container_version }} "$@"
 
 - name: "preload image for perun_cli"
   docker_image:
