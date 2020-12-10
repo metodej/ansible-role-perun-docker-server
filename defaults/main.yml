@@ -113,6 +113,7 @@ perun_oldgui_rt_defaultMail: "perun@cesnet.cz"
 # new GUI
 perun_ngui_hostname: "perun.aai.example.org"
 perun_ngui_client_id: "xxx-xxxx-xxxx-xxx-xx-xxx"
+perun_ngui_apache_special_config1: ""
 
 # perun-registrar-lib.properties
 perun_registrar_secretKey: "test"
