@@ -21,8 +21,6 @@
 
   RewriteEngine On
 
-  RewriteRule ^/(.*)/pwd-reset(.*)$ https://{{ perun_rpc_hostname }}/$1/pwd-reset$2 [L,R=301]
-
 {{ perun_ngui_apache_special_config1 }}
 
   # If an existing asset or directory is requested go to it as it is

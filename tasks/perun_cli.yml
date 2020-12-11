@@ -15,7 +15,18 @@
     mode: '0550'
     content: |
       #!/bin/bash
-      docker run -it --rm --name cli_$$ --env-file /etc/perun/perun-cli-env ${PERUN_DOCKER_OPTS} \
+      docker run -it --rm --name cli_$$ --volume /home/perun:/home/perun --env-file /etc/perun/perun-cli-env ${PERUN_DOCKER_OPTS} \
+        registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_cli_perl:{{ perun_cli_container_version }} "$@"
+
+- name: "create /usr/local/bin/perun-script-cli for scripts"
+  copy:
+    dest: /usr/local/bin/perun-script-cli
+    owner: perun
+    group: perun
+    mode: '0550'
+    content: |
+      #!/bin/bash
+      docker run --rm --name script_cli_$$ --volume /home/perun:/home/perun --env-file /etc/perun/perun-cli-env ${PERUN_DOCKER_OPTS} \
         registry.gitlab.ics.muni.cz:443/perun/perun_docker/perun_cli_perl:{{ perun_cli_container_version }} "$@"
 
 - name: "preload image for perun_cli"
