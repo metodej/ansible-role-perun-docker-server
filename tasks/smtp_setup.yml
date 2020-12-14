@@ -1,5 +1,15 @@
 # os_setup.yml called cesnet.unattended_upgrades that installed sendmail already
 
+- name: "add docker0 bridge network to /etc/hosts to avoid warnings in log"
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ansible_facts.docker0.ipv4.address }} docker0"
+
+- name: "add perun_net bridge network to /etc/hosts to avoid warnings in log"
+  lineinfile:
+    path: /etc/hosts
+    line: "192.168.0.1 perun_net"
+
 - name: "make sendmail to receive SMTP from docker containers"
   lineinfile:
     path: /etc/mail/sendmail.mc
