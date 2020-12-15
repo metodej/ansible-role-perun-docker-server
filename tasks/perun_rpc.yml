@@ -15,7 +15,7 @@
     group: perunrpc
     mode: '0440'
 
-- name: "create perun-web-gui.properties (contains several variables)"
+- name: "create perun-web-gui.properties"
   template:
     src: perun-web-gui.properties.j2
     dest: /etc/perun/rpc/perun-web-gui.properties
@@ -24,7 +24,7 @@
     mode: '0440'
   notify: "restart perun_rpc"
 
-- name: "create perun.properties (contains several variables)"
+- name: "create perun.properties"
   template:
     src: perun.properties.j2
     dest: /etc/perun/rpc/perun.properties
@@ -121,8 +121,24 @@
     directory_mode: '0550'
     mode: '0440'
 
+- name: "detect local directory perun_rpc_home/"
+  local_action:
+    module: stat
+    path: "files/{{ perun_instance_hostname }}/perun_rpc_home/"
+  register: rpchome
+
+- name: "recursive copy from perun_rpc_home/ to /home/perunrpc/"
+  when: rpchome.stat.exists
+  copy:
+    src: "{{ rpchome.stat.path }}"
+    dest: /home/perunrpc/
+    owner: perunrpc
+    group: perunrpc
+    directory_mode: '0550'
+    mode: '0550'
+
 # used for logs from group synchronizations
-- name: Make /var/log/perun/groupsync" directory
+- name: "make /var/log/perun/groupsync directory"
   file:
     path: "/var/log/perun/groupsync"
     state: directory
@@ -140,6 +156,9 @@
       - { type: volume, source: perun_logs, target: /var/log/perun }
       - { type: volume, source: perunrpc_home, target: /home/perun }
       - { type: volume, source: perunrpc_etc, target: /etc/perun }
+      # bind syslog and journal from container to host, see https://www.projectatomic.io/blog/2016/10/playing-with-docker-logging/
+      - { type: bind, source: /dev/log, target: /dev/log }
+      - { type: bind, source: /var/run/systemd/journal/socket, target: /var/run/systemd/journal/socket }
     networks_cli_compatible: yes
     networks:
       - name: perun_net
