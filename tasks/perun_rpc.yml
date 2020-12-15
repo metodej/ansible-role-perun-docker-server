@@ -1,4 +1,4 @@
-- name: "create jdbc.properties"
+- name: "create jdbc.properties for RPC"
   template:
     src: jdbc.properties.j2
     dest: /etc/perun/rpc/jdbc.properties
@@ -7,7 +7,7 @@
     mode: '0440'
   notify: "restart perun_rpc"
 
-- name: "create perun-roles.yml"
+- name: "create perun-roles.yml for RPC"
   template:
     src: perun-roles.yml.j2
     dest: /etc/perun/rpc/perun-roles.yml
@@ -24,7 +24,7 @@
     mode: '0440'
   notify: "restart perun_rpc"
 
-- name: "create perun.properties"
+- name: "create perun.properties for RPC"
   template:
     src: perun.properties.j2
     dest: /etc/perun/rpc/perun.properties

@@ -7,8 +7,8 @@
     mode: 0440
   notify: "restart perun_ldapc"
 
-# files jdbc.properties, perun.properties and perun-roles.yml are nneded because LDAPc includes Perun core
-- name: "create jdbc.properties (contains db password)"
+# files jdbc.properties, perun.properties and perun-roles.yml are needed because LDAPc includes Perun core
+- name: "create jdbc.properties for LDAPc)"
   template:
     src: jdbc.properties.j2
     dest: /etc/perun/ldapc/jdbc.properties
@@ -17,7 +17,7 @@
     mode: 0440
   notify: "restart perun_ldapc"
 
-- name: "create perun.properties (contains several variables)"
+- name: "create perun.properties for LDAPc"
   template:
     src: perun.properties.j2
     dest: /etc/perun/ldapc/perun.properties
@@ -26,7 +26,7 @@
     mode: 0440
   notify: "restart perun_ldapc"
 
-- name: "create perun-roles.yml"
+- name: "create perun-roles.yml for LDAPc"
   template:
     src: perun-roles.yml.j2
     dest: /etc/perun/ldapc/perun-roles.yml
