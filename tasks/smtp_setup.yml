@@ -1,6 +1,7 @@
 # os_setup.yml called cesnet.unattended_upgrades that installed sendmail already
 
 - name: "add docker0 bridge network to /etc/hosts to avoid warnings in log"
+  when: ansible_facts.docker0 is defined
   lineinfile:
     path: /etc/hosts
     line: "{{ ansible_facts.docker0.ipv4.address }} docker0"

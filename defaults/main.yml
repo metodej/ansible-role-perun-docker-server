@@ -24,19 +24,17 @@ perun_rpc_hostname: "{{ inventory_hostname }}"
 perun_rpc_hostname_aliases: []
 perun_rpc_admins:
   - perun
-  - perunTests
   - perunDispatcher
   - perunController
   - perunEngine
   - perunRegistrar
   - perunCabinet
   - perunLdapc
-  - perunLdapInitializer
+perun_rpc_additional_admins: []
 perun_rpc_engine_principals:
   - perunEngine
   - perun-engine
 perun_rpc_dont_lookup_users:
-  - perunTests
   - perunDispatcher
   - perunController
   - perunEngine
@@ -47,7 +45,6 @@ perun_rpc_dont_lookup_users:
   - perunNotifications
   - perunRpc
   - perunSynchronizer
-  - perunLdapInitializer
 perun_rpc_rt_url: ""
 perun_rpc_rt_defaultQueue: ""
 perun_rpc_rt_serviceuser_username: ""
@@ -109,6 +106,8 @@ perun_oldgui_profile_settings_hidePages: [ 'sshkeys', 'dataquotas']
 perun_oldgui_disableCreateVo: 'false'
 perun_oldgui_rt_defaultQueue: "perun"
 perun_oldgui_rt_defaultMail: "perun@cesnet.cz"
+perun_oldgui_fedAuthz: [ 'fed' ]
+perun_oldgui_supportedPasswordNamespaces: ''
 
 # new GUI
 perun_ngui_hostname: "perun.aai.example.org"
@@ -209,6 +208,7 @@ perun_apache_profile_html_suffix: ""
 perun_apache_pwdreset_html_suffix: ""
 perun_apache_wui_enabled: yes
 perun_apache_affiliation_enabled: no
+perun_apache_affiliation_html_suffix: ""
 perun_apache_publications_enabled: no
 perun_apache_special_config2: ""
 

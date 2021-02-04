@@ -34,10 +34,10 @@ rt.defaultQueue={{ perun_oldgui_rt_defaultQueue }}
 rt.defaultMail={{ perun_oldgui_rt_defaultMail }}
 reCaptcha.publicKey=6Lf0eUYUAAAAAAQuoyjZCrK9DztF4e-wF23PBPFR
 reCaptcha.skipVos=
-attributesForMemberTables=urn:perun:member:attribute-def:def:organization,urn:perun:user:attribute-def:def:organization,urn:perun:user:attribute-def:def:preferredMail,urn:perun:member:attribute-def:def:mail
-attributesForUserTables=urn:perun:user:attribute-def:def:organization,urn:perun:user:attribute-def:def:preferredMail
+attributesForMemberTables={{ perun_oldgui_getAttributesListForMemberTables|join(',') }}
+attributesForUserTables={{ perun_oldgui_getAttributesListForUserTables|join(',') }}
 namespacesForPreferredGroupNames=
-supportedPasswordNamespaces=
+supportedPasswordNamespaces={{ perun_oldgui_supportedPasswordNamespaces }}
 perunInstanceName={{ perun_rpc_instance_name }}
 isDevel=false
 membersGroupName=members
@@ -45,10 +45,6 @@ language.supported={{ perun_oldgui_language_supported }}
 language.flags.cs=data:image/gif;base64,R0lGODlhEgANALMAADV4zfLy8s3NzUiCz+cAAJ2dnexvbbfN6+3t7d4AAPj4+N/f3+hfXZIzXKK/5MFZbSH5BAAAAAAALAAAAAASAA0AAARNsMhJKx0H6b26X4I0YEpplkEahMU4OKeiBsgqujCqbqw7ALDZBtFzAQAPg9LAaDJvP0CDQE1Yr4nbcUolYK9abvVrvTXIaNEZTba4LREAOw==
 language.flags.en=data:image/gif;base64,R0lGODlhEgANALMAAPv7+wAAPPsAAAUVh52dnfZgVXOQxU50qyhNp6Zxmb/I4qOx1/iPjVRuwXMQKdOi0CH5BAAAAAAALAAAAAASAA0AAARtkMhJKz3roK2cU0OIOIdkMIBiGEBRAE2zvIaELAzaAIIAM7SBzdB4vHi+FwgRkCgA0GgvGlVIHIWedrt1OKnQKdhKGDQGT59YkAg1yywXAgkYtASNd3yxoYcWPAgSBw4hAwEdHwGLAQZvFpAUEQA7
 
-# brand.logo.[lang]=
-# brand.logo.url.[lang]=
-# brand.name.[lang]=
-# brand.supportMail.[lang]=
 # brand.supportPhone.[lang]=
 {% if perun_oldgui_brand_supportMail_en is defined %}
 brand.supportMail.en={{ perun_oldgui_brand_supportMail_en }}
@@ -59,8 +55,14 @@ brand.supportMail.cs={{ perun_oldgui_brand_supportMail_cs }}
 {% if perun_oldgui_brand_logo_en is defined %}
 brand.logo.en={{ perun_oldgui_brand_logo_en }}
 {% endif %}
+{% if perun_oldgui_brand_logo_url_en is defined %}
+brand.logo.url.en={{ perun_oldgui_brand_logo_url_en }}
+{% endif %}
 {% if perun_oldgui_brand_logo_cs is defined %}
 brand.logo.cs={{ perun_oldgui_brand_logo_cs }}
+{% endif %}
+{% if perun_oldgui_brand_logo_url_cs is defined %}
+brand.logo.url.cs={{ perun_oldgui_brand_logo_url_cs }}
 {% endif %}
 {% if perun_oldgui_brand_name_en is defined %}
 brand.name.en={{ perun_oldgui_brand_name_en }}
@@ -68,36 +70,30 @@ brand.name.en={{ perun_oldgui_brand_name_en }}
 {% if perun_oldgui_brand_name_cs is defined %}
 brand.name.cs={{ perun_oldgui_brand_name_cs }}
 {% endif %}
+{% if perun_oldgui_brand_profile_title_en is defined %}
+brand.profile.title.en={{ perun_oldgui_brand_profile_title_en }}
+{% endif %}
+{% if perun_oldgui_brand_profile_unknownUsersRedirect_en is defined %}
+brand.profile.unknownUsersRedirect.en={{ perun_oldgui_brand_profile_unknownUsersRedirect_en }}
+{% endif %}
 
 footer.disabled={{ perun_oldgui_footer_disabled }}
 language.switch.disabled={{ perun_oldgui_language_switch_disabled }}
 header.disabled=false
 
-fedAuthz=fed
+fedAuthz={{ perun_oldgui_fedAuthz|join(',') }}
 
 {% if perun_oldgui_privacyPolicyLink is defined %}
 # Link to Privacy Policy
 privacyPolicyLink={{ perun_oldgui_privacyPolicyLink }}
 {% endif %}
 
-# wayf.groups = { wayf config object }, // can be only local
-# should have at-least two hostnames
+{% if perun_oldgui_wayf is defined %}
+{{ perun_oldgui_wayf }}
+{% endif %}
 wayf.cert.hosts={{ perun_oldgui_cert_hosts|join(',') }}
 wayf.spLogoutUrl=/Consolidator.sso/Logout
 wayf.spLoginUrl=/Consolidator.sso/Login
-# Custom Perun SP login/logout endpoints
-#spLoginUrl=https://{{ perun_rpc_hostname }}/Shibboleth.sso/Login
-#spLogoutUrl=https://{{ perun_rpc_hostname }}/Shibboleth.sso/logout
-
-# uncomment for specific texts on Identity consolidator for Proxy IdP workflow
-#wayf.linkAnotherButton.disabled=true
-#wayf.linkAnotherButton.cs=Zkusit znovu
-#wayf.linkAnotherButton.en=Try again
-#wayf.leaveButton.cs=Jít na profil
-#wayf.leaveButton.en=Continue to profile
-#wayf.linkAnAccount.cs=
-#wayf.linkAnAccount.en=
-#wayf.linkAnAccount.disabled=false
 
 {% if perun_oldgui_wayf_idpTranslations is defined %}
 # custom IdP translations like: scope or entityID|name#scope or entityID|name#...

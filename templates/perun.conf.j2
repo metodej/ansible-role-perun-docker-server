@@ -171,6 +171,9 @@ ShibCompatValidUser on
   RewriteRule ^/(krb|cert)-ic/ic/(.+)$ /var/www/perun-wui/$2 [L]
 
   RewriteRule ^/(.*)-ic/ic$ https://%{HTTP_HOST}/$1/ic/ [L,R=301]
+{% if  perun_apache_consolidator_rewrite_rules is defined %}
+{{ perun_apache_consolidator_rewrite_rules }}
+{% endif %}
   RewriteRule ^/(.*)-ic/ic/$ /var/www/perun-wui/PerunConsolidator{{ perun_apache_consolidator_html_suffix }}.html [L]
   RewriteRule ^/(.*)-ic/ic/(.+)$ /var/www/perun-wui/$2 [L]
 
@@ -200,7 +203,7 @@ ShibCompatValidUser on
   ##     AFFILIATION              ####
   ####################################
   RewriteRule ^/(.*)/affiliation$ https://%{HTTP_HOST}/$1/affiliation/ [L,R=301]
-  RewriteRule ^/(.*)/affiliation/$ /var/www/perun-wui/PerunSetAffiliation.html [L]
+  RewriteRule ^/(.*)/affiliation/$ /var/www/perun-wui/PerunSetAffiliation{{ perun_apache_affiliation_html_suffix }}.html [L]
   RewriteRule ^/(.*)/affiliation/(.+)$ /var/www/perun-wui/$2 [L]
 
 {% endif %}
@@ -253,6 +256,9 @@ ShibCompatValidUser on
 {% if item.id is defined %}
     ShibRequestSetting requireSessionWith {{  item.id }}
 {% endif %}
+{% if item.entityID is defined %}
+    ShibRequestSetting entityID {{  item.entityID }}
+{% endif %}
     Require shib-session
   </LocationMatch>
 
@@ -264,6 +270,9 @@ ShibCompatValidUser on
     ShibRequestSetting requireSessionWith {{  item.id }}
 {% endif %}
     ShibRequestSetting forceAuthn On
+{% if item.entityID is defined %}
+    ShibRequestSetting entityID {{  item.entityID }}
+{% endif %}
     Require shib-session
   </LocationMatch>
 

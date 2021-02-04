@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
 # Perun administrators
-perun.admins = {{ perun_rpc_admins|join(', ') }}
+perun.admins = {{ (perun_rpc_admins+perun_rpc_additional_admins)|join(', ') }}
 
 # Principals for the Engines
 perun.engine.principals = {{ perun_rpc_engine_principals|join(', ') }}
