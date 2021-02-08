@@ -54,6 +54,16 @@
   import_tasks: perun_volumes.yml
   tags: perun_volumes
 
+- name: "site-specific tasks before perun config"
+  when: perun_site_specific_tasks_before is defined
+  include_tasks:
+    file: "files/{{ perun_instance_hostname}}/{{ perun_site_specific_tasks_before }}"
+    apply:
+      tags:
+        - site_specific
+  tags:
+    - site_specific
+
 - name: "perun rpc setup"
   import_tasks: perun_rpc.yml
   tags:
@@ -84,10 +94,10 @@
     - perun_cli
     - perun_config
 
-- name: "site-specific tasks"
-  when: perun_site_specific_tasks is defined
+- name: "site-specific tasks after perun config"
+  when: perun_site_specific_tasks_after is defined
   include_tasks:
-    file: "files/{{ perun_instance_hostname}}/{{ perun_site_specific_tasks }}"
+    file: "files/{{ perun_instance_hostname}}/{{ perun_site_specific_tasks_after }}"
     apply:
       tags:
         - site_specific
