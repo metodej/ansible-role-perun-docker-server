@@ -23,6 +23,11 @@
   import_tasks: os_setup.yml
   tags: os_setup
 
+- name: "creation of users perun, peruneng, etc."
+  import_tasks: perun_users.yml
+  tags: perun_users
+
+
 - name: "SMTP setup"
   import_tasks: smtp_setup.yml
   tags: smtp_setup

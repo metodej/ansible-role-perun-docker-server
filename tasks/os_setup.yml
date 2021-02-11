@@ -42,38 +42,3 @@
     state: present
   loop: "{{ perun_root_users }}"
 
-- name: "create perun groups"
-  group:
-    name: "{{ item.name }}"
-    system: yes
-    gid: "{{ item.gid }}"
-  loop:
-    - { name: perun, gid: 960 }
-    - { name: perunrpc, gid: 961 }
-    - { name: peruneng, gid: 962 }
-    - { name: perunldc, gid: 963 }
-    - { name: _shibd, gid: 964 }
-
-- name: "create perun users"
-  user:
-    name: "{{ item.name }}"
-    uid: "{{ item.uid }}"
-    group: "{{ item.name }}"
-    comment: "{{ item.comment }}"
-    shell: "{{ item.shell }}"
-    system: yes
-    create_home: "{{ item.home }}"
-  loop:
-    - { name: perun,    uid: 960, comment: "Perun", home: yes, shell: /bin/bash }
-    - { name: perunrpc, uid: 961, comment: "Perun RPC", home: no, shell: /bin/bash }
-    - { name: peruneng, uid: 962, comment: "Perun Engine", home: no, shell: /bin/bash }
-    - { name: perunldc, uid: 963, comment: "Perun LDAP Connector", home: no, shell: /bin/bash }
-    - { name: _shibd,   uid: 964, comment: "Shibboleth daemon", home: no, shell: /usr/sbin/nologin }
-
-- name: "create /home/perun/Perun_README.txt"
-  template:
-    src: Perun_README.txt.j2
-    dest: /home/perun/Perun_README.txt
-    owner: perun
-    group: perun
-    mode: '0544'

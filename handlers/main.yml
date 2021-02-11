@@ -44,3 +44,8 @@
     name: postgresql
     state: restarted
   when: ansible_facts.services['postgresql'] is defined and ansible_facts.services['postgresql'].state=='running'
+
+- name: "restart sshd"
+  service:
+    name: sshd
+    state: restarted

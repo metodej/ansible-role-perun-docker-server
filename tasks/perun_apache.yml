@@ -75,6 +75,9 @@
   template:
     src: perun.conf.j2
     dest: /etc/perun/apache/sites-enabled/000-perun.conf
+    owner: root
+    group: root
+    mode: '0400'
   notify: "restart perun_apache"
 
 - name: "create /etc/perun/apache/sites-enabled/perun-ngui.conf"
@@ -82,6 +85,9 @@
   template:
     src: perun-ngui.conf.j2
     dest: /etc/perun/apache/sites-enabled/perun-ngui.conf
+    owner: root
+    group: root
+    mode: '0400'
   notify: "restart perun_apache"
 
 - name: "set Kerberos keytab"
@@ -126,9 +132,9 @@
   copy:
     src: "{{ lookup('first_found', findme) }}"
     dest: /etc/perun/apache/shibboleth/sp-key.pem
-    owner: root
-    group: root
-    mode: 0444
+    owner: _shibd
+    group: _shibd
+    mode: '0400'
   vars:
     findme:
       - "{{ perun_instance_hostname }}/sp-key.pem"
@@ -138,9 +144,9 @@
   copy:
     src: "{{ lookup('first_found', findme) }}"
     dest: /etc/perun/apache/shibboleth/sp-cert.pem
-    owner: root
-    group: root
-    mode: 0444
+    owner: _shibd
+    group: _shibd
+    mode: '0444'
   vars:
     findme:
       - "{{ perun_instance_hostname }}/sp-cert.pem"
