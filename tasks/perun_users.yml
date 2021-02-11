@@ -1,0 +1,43 @@
+- name: "create perun groups"
+  group:
+    name: "{{ item.name }}"
+    system: yes
+    gid: "{{ item.gid }}"
+  loop:
+    - { name: perun, gid: 960 }
+    - { name: perunrpc, gid: 961 }
+    - { name: peruneng, gid: 962 }
+    - { name: perunldc, gid: 963 }
+    - { name: _shibd, gid: 964 }
+
+- name: "create perun users"
+  user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    group: "{{ item.name }}"
+    comment: "{{ item.comment }}"
+    shell: "{{ item.shell }}"
+    system: yes
+    create_home: "{{ item.create_home }}"
+    home: "{{ item.home }}"
+  loop:
+    - { name: perun,    uid: 960, comment: "Perun", create_home: yes, home: /home/perun, shell: /bin/bash }
+    - { name: perunrpc, uid: 961, comment: "Perun RPC", create_home: no, home: /nonexistent, shell: /usr/sbin/nologin }
+    - { name: peruneng, uid: 962, comment: "Perun Engine", create_home: no, home: /nonexistent, shell: /usr/sbin/nologin }
+    - { name: perunldc, uid: 963, comment: "Perun LDAP Connector", create_home: no, home: /nonexistent, shell: /usr/sbin/nologin }
+    - { name: _shibd,   uid: 964, comment: "Shibboleth daemon", create_home: no, home: /nonexistent, shell: /usr/sbin/nologin }
+
+- name: "disable ssh to perun* users"
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "DenyUsers perunrpc peruneng perunldc"
+    state: present
+  notify: "restart sshd"
+
+- name: "create /home/perun/Perun_README.txt"
+  template:
+    src: Perun_README.txt.j2
+    dest: /home/perun/Perun_README.txt
+    owner: perun
+    group: perun
+    mode: '0544'
