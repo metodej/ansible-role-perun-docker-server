@@ -1,3 +1,12 @@
+- name: "create server.xml for tomcat"
+  template:
+    src: server.xml.j2
+    dest: /etc/perun/rpc/server.xml
+    owner: perunrpc
+    group: perunrpc
+    mode: '0440'
+  notify: "restart perun_rpc"
+
 - name: "create jdbc.properties for RPC"
   template:
     src: jdbc.properties.j2
