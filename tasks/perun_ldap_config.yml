@@ -61,6 +61,12 @@
       - entityID eq
       - assignedToResourceId eq
       - userIdentities eq
+      - OIDCClientID eq
+      - perunFacilityId eq
+      - perunFacilityDn eq
+      - perunUserId eq
+      - perunGroupId eq
+      - assignedGroupId eq
     state: exact
   notify: "restart ldap"
 
