@@ -68,7 +68,6 @@
       - perunGroupId eq
       - assignedGroupId eq
     state: exact
-  notify: "restart ldap"
 
 - name: "get OS service facts"
   when: ansible_facts.services['slapd'] is not defined
