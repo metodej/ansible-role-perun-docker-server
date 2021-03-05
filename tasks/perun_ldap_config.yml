@@ -1,3 +1,10 @@
+- name: "set cn=config attribute olcAttributeOptions: x-ns-"
+  ldap_attr:
+    dn: cn=config
+    name: olcAttributeOptions
+    values: "x-ns-"
+    state: present
+
 - name: "create entry for schema perun"
   ldap_entry:
     dn: cn={4}perun,cn=schema,cn=config

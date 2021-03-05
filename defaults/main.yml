@@ -350,3 +350,7 @@ perun_ldap_access_rules_end:
     by * break
 perun_ldap_access_rules_additional: []
 perun_ldap_size_limit: unlimited
+perun_ldap_users:
+  - user: proxy
+    password: "{{ perun_ldap_proxy_password }}"
+    description: "user for IdP Proxy"
