@@ -7,7 +7,7 @@
     mode: 0440
   notify: "restart perun_ldapc"
 
-# files jdbc.properties, perun.properties and perun-roles.yml are needed because LDAPc includes Perun core
+# files jdbc.properties, perun.properties, perun-roles.yml and sponsored-accounts-config.yml are needed because LDAPc includes Perun core
 - name: "create jdbc.properties for LDAPc)"
   template:
     src: jdbc.properties.j2
@@ -33,6 +33,19 @@
     owner: perunldc
     group: perunldc
     mode: 0440
+  notify: "restart perun_ldapc"
+
+- name: "create sponsored-accounts-config.yml"
+  copy:
+    src: "{{ lookup('first_found', findme) }}"
+    dest: /etc/perun/ldapc/sponsored-accounts-config.yml
+    owner: perunldc
+    group: perunldc
+    mode: 0440
+  vars:
+    findme:
+      - "{{ perun_instance_hostname }}/sponsored-accounts-config.yml"
+      - "sponsored-accounts-config.yml"
   notify: "restart perun_ldapc"
 
 - name: "create logback-ldapc.xml"
@@ -71,15 +84,6 @@
     content: "0"
     owner: perunldc
     group: perunldc
-
-- name: "create jdbc.properties (contains db password)"
-  template:
-    src: jdbc.properties.j2
-    dest: /etc/perun/ldapc/jdbc.properties
-    owner: perunldc
-    group: perunldc
-    mode: 0440
-  notify: "restart perun_ldapc"
 
 - name: "create Perun LDAPc container"
   docker_container:

@@ -95,6 +95,19 @@
       - "perun-extSources.xml"
   notify: "restart perun_rpc"
 
+- name: "create sponsored-accounts-config.yml"
+  copy:
+    src: "{{ lookup('first_found', findme) }}"
+    dest: /etc/perun/rpc/sponsored-accounts-config.yml
+    owner: perunrpc
+    group: perunrpc
+    mode: 0440
+  vars:
+    findme:
+      - "{{ perun_instance_hostname }}/sponsored-accounts-config.yml"
+      - "sponsored-accounts-config.yml"
+  notify: "restart perun_rpc"
+
 - name: "create directory /etc/perun/rpc/modules/"
   file:
     path: /etc/perun/rpc/modules
