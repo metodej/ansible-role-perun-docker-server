@@ -81,6 +81,7 @@ perun_rpc_attributesToKeep:
   - urn:perun:user:attribute-def:def:login-namespace:*
   - urn:perun:user:attribute-def:def:uid-namespace:*
 perun_rpc_ajp_secret: "xpRrA7UNrT7c"
+perun_rpc_sendIdentityAlerts: 'false'
 
 # old GUI
 perun_oldgui_defaultRtQueue: "perun"
