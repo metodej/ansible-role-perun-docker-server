@@ -110,6 +110,47 @@
     - "files/{{ perun_instance_hostname }}/send-local/*"
   notify: "restart perun_engine"
 
+- name: "make key, cert and chain for generic_send script with curl"
+  block:
+    - name: "create engine ssl dir"
+      file:
+        state: directory
+        path: /etc/perun/engine/ssl
+        owner: peruneng
+        group: peruneng
+        mode: '0550'
+
+    - name: "use certbot certificates for generic_send"
+      when: perun_use_certbot_certificates
+      copy:
+        remote_src: yes
+        src: "/etc/letsencrypt/live/{{ perun_rpc_hostname }}/privkey.pem"
+        dest: /etc/perun/engine/ssl/perun-send.key
+        owner: peruneng
+        group: peruneng
+        mode: '0550'
+      notify:
+        - "restart perun_engine"
+      loop:
+        - { src: "privkey.pem", dest: "perun-send.key" }
+        - { src: "cert.pem", dest: "perun-send.pem" }
+        - { src: "chain.pem", dest: "perun-send.chain" }
+
+    - name: "use issued certificates for generic_send"
+      when: not perun_use_certbot_certificates
+      copy:
+        src: "{{ perun_instance_hostname }}/{{ item.src }}"
+        dest: "/etc/perun/engine/ssl/{{ item.dest }}"
+        owner: peruneng
+        group: peruneng
+        mode: '0550'
+      notify:
+        - "restart perun_engine"
+      loop:
+        - { src: "hostkey.pem", dest: "perun-send.key" }
+        - { src: "hostcert.pem", dest: "perun-send.pem" }
+        - { src: "hostchain.pem", dest: "perun-send.chain" }
+
 - name: "create Perun engine container"
   docker_container:
     name: perun_engine
