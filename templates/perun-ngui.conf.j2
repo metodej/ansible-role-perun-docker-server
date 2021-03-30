@@ -19,11 +19,18 @@
   Require all granted
   </Directory>
 
+  Alias /img /etc/perun/apache/img
+  <Directory "/etc/perun/apache/img">
+    Options -Indexes -FollowSymLinks -MultiViews
+    Require all granted
+  </Directory>
+
   RewriteEngine On
 
 {{ perun_ngui_apache_special_config1 }}
 
-  # If an existing asset or directory is requested go to it as it is
+  # If URI start with /img or an existing asset or directory is requested go to it as it is
+  RewriteCond "%{REQUEST_URI}" "^/img" [OR]
   RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
   RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
   RewriteRule ^ - [L]
@@ -51,7 +58,7 @@
   # https://scotthelme.co.uk/hardening-your-http-response-headers/#x-xss-protection
   Header always set X-XSS-Protection "1; mode=block"
   # https://scotthelme.co.uk/content-security-policy-an-introduction/
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-eval' ; font-src https://fonts.gstatic.com https://fonts.googleapis.com ; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com ; connect-src 'self' {{ perun_rpc_oidc_issuers[0].iss }} https://{{ perun_rpc_hostname }} ; frame-src 'self' {{ perun_rpc_oidc_issuers[0].iss }} https://{{ perun_rpc_hostname }} "
+  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: ; script-src 'self' 'unsafe-eval' ; font-src https://fonts.gstatic.com https://fonts.googleapis.com ; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com ; connect-src 'self' {{ perun_rpc_oidc_issuers[0].iss }} https://{{ perun_rpc_hostname }} ; frame-src 'self' {{ perun_rpc_oidc_issuers[0].iss }} https://{{ perun_rpc_hostname }} "
   # https://scotthelme.co.uk/a-new-security-header-referrer-policy/
   Header always set Referrer-Policy "no-referrer-when-downgrade"
   # https://scotthelme.co.uk/a-new-security-header-feature-policy/
