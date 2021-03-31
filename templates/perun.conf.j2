@@ -201,24 +201,7 @@ ShibCompatValidUser on
   RewriteRule ^/(.*)/wui/(.+)$ /var/www/perun-wui/$2 [L]
 
 {% endif %}
-{% if perun_apache_affiliation_enabled %}
-  ####################################
-  ##     AFFILIATION              ####
-  ####################################
-  RewriteRule ^/(.*)/affiliation$ https://%{HTTP_HOST}/$1/affiliation/ [L,R=301]
-  RewriteRule ^/(.*)/affiliation/$ /var/www/perun-wui/PerunSetAffiliation{{ perun_apache_affiliation_html_suffix }}.html [L]
-  RewriteRule ^/(.*)/affiliation/(.+)$ /var/www/perun-wui/$2 [L]
 
-{% endif %}
-{% if perun_apache_publications_enabled %}
-  ####################################
-  ##     PUBLICATIONS             ####
-  ####################################
-  RewriteRule ^/(.*)/publications$ https://%{HTTP_HOST}/$1/publications/ [L,R=301]
-  RewriteRule ^/(.*)/publications/$ /var/www/perun-wui/PerunCabinet.html [L]
-  RewriteRule ^/(.*)/publications/(.+)$ /var/www/perun-wui/$2 [L]
-
-{% endif %}
   ####################################
   ##     AuthN Methods            ####
   ####################################
