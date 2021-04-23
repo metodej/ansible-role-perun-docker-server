@@ -71,8 +71,10 @@ perun.pwdreset.validationWindow = {{ perun_rpc_pwdreset_validationWindow }}
 # Account activation validity window (in hours)
 perun.accountActivation.validationWindow = {{ perun_rpc_accountActivation_validationWindow }}
 
+{% if perun_rpc_loginNamespace_generated is defined %}
 # List of login-namespaces which will have value automatically generated from users name.
-perun.loginNamespace.generated=
+perun.loginNamespace.generated={{ perun_rpc_loginNamespace_generated | join(',') }}
+{% endif %}
 
 # Program which sends sms from Perun
 perun.sms.program = /home/perun/send_sms.sh
