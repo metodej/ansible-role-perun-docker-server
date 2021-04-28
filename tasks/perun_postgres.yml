@@ -32,25 +32,6 @@
     path_to_script: /tmp/postgres.sql
   when: not table_users.query_result[0].exists
 
-- name: "create /var/lib/postgresql/dump_psql_db.sh file"
-  copy:
-    dest: /var/lib/postgresql/dump_psql_db.sh
-    owner: postgres
-    group: postgres
-    mode: 0550
-    content: |
-      #!/bin/bash
-      if [ -z "$1" ] ; then
-        echo "Usage: $0 db_name"
-        exit 1
-      fi
-      DBNAME="$1"
-      FILENAME="$DBNAME"_`date +"%Y-%m-%d-%H-%M-%S"`.sql.xz
-      echo "dumping PostgreSQL database $DBNAME into $PWD/$FILENAME ..."
-      export LANG=cs_CZ.UTF-8
-      umask 0027
-      pg_dump $DBNAME | xz -T $(($(nproc)-2>1?$(nproc)-2:1)) -3 >"$FILENAME"
-
 - name: "create /etc/cron.d/perundb-backup"
   cron:
     name: "Every Sunday night do backup of the Perun db"
